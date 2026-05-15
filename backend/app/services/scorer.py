@@ -50,6 +50,7 @@ class ScoringEngine:
         "mcp-server": 0.6,       # Infrastructure: cross-domain utility
         "claude-skill": 0.8,     # Agent-native: highest relevance
         "codex-skill": 0.7,      # Agent-native
+        "prompt-library": 0.55,  # Prompt assets: useful, but lighter-weight than tools
         "agent-tool": 0.7,       # General agent tooling
         "ai-skill": 0.6,         # General AI skills
         "llm-plugin": 0.5,       # LLM integration

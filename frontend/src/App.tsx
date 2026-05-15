@@ -11,6 +11,7 @@ import { AdminLayout } from "./pages/admin/AdminLayout";
 import { CategoryPage } from "./pages/CategoryPage";
 import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import { AnalyzerPage } from "./pages/AnalyzerPage";
+import { DraftViewerPage } from "./pages/DraftViewerPage";
 
 function App() {
   return (
@@ -22,11 +23,19 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/skill/:id" element={<SkillDetailPage />} />
+              <Route path="/skill/:id/" element={<SkillDetailPage />} />
               <Route path="/skill/:owner/:repo" element={<SkillDetailPage />} />
+              <Route path="/skill/:owner/:repo/" element={<SkillDetailPage />} />
               <Route path="/category/:slug" element={<CategoryPage />} />
+              <Route path="/category/:slug/" element={<CategoryPage />} />
               <Route path="/compare" element={<ComparePage />} />
+              <Route path="/compare/" element={<ComparePage />} />
               <Route path="/analyzer" element={<AnalyzerPage />} />
+              <Route path="/analyzer/" element={<AnalyzerPage />} />
+              <Route path="/draft/:slug" element={<DraftViewerPage />} />
+              <Route path="/draft/:slug/" element={<DraftViewerPage />} />
               <Route path="/verify-email" element={<VerifyEmailPage />} />
+              <Route path="/verify-email/" element={<VerifyEmailPage />} />
               <Route path="/admin/*" element={<AdminLayout />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

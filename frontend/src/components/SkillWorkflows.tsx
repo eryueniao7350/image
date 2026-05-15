@@ -29,7 +29,8 @@ const WORKFLOW_META: Record<string, { icon: string; title_zh: string; title_en: 
   "ai-skill": { icon: "cpu", title_zh: "AI 技能", title_en: "AI Skills", description_zh: "跨平台 AI 技能与插件", description_en: "Cross-platform AI skills & plugins", sort_order: 3 },
   "agent-tool": { icon: "wrench", title_zh: "Agent 工具", title_en: "Agent Tools", description_zh: "AI Agent 框架与工具", description_en: "AI Agent frameworks & tools", sort_order: 4 },
   "codex-skill": { icon: "code", title_zh: "Codex 技能", title_en: "Codex Skills", description_zh: "OpenAI Codex 专属技能", description_en: "OpenAI Codex skills", sort_order: 6 },
-  "llm-plugin": { icon: "puzzle", title_zh: "LLM 插件", title_en: "LLM Plugins", description_zh: "大语言模型插件与扩展", description_en: "LLM plugins & extensions", sort_order: 7 },
+  "prompt-library": { icon: "book-open", title_zh: "提示词库", title_en: "Prompt Libraries", description_zh: "可复用的提示词集合与模板仓库", description_en: "Reusable prompt collections and template repos", sort_order: 7 },
+  "llm-plugin": { icon: "puzzle", title_zh: "LLM 插件", title_en: "LLM Plugins", description_zh: "大语言模型插件与扩展", description_en: "LLM plugins & extensions", sort_order: 8 },
 };
 
 const iconPaths: Record<string, string> = {
@@ -38,6 +39,7 @@ const iconPaths: Record<string, string> = {
   cpu: "M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z",
   wrench: "M11.42 15.17l-5.384 5.384a1.522 1.522 0 01-2.153-2.153l5.384-5.384m2.153 2.153l5.384-5.384a1.522 1.522 0 00-2.153-2.153L9.267 12.95m2.153 2.22a3.015 3.015 0 004.276 0 3.015 3.015 0 000-4.276",
   code: "M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5",
+  "book-open": "M2.25 6.75A2.25 2.25 0 014.5 4.5h5.386c.621 0 1.217.247 1.656.686l.458.458.458-.458A2.343 2.343 0 0114.114 4.5H19.5a2.25 2.25 0 012.25 2.25v10.5a.75.75 0 01-.75.75h-6.886a2.25 2.25 0 00-1.591.659l-.523.523-.523-.523A2.25 2.25 0 009.886 18H3a.75.75 0 01-.75-.75V6.75zm9.75.44l-.458-.457a.843.843 0 00-.596-.247H4.5a.75.75 0 00-.75.75v9.258l6.136.006A3.75 3.75 0 0112 17.124V7.19zm1.5 9.934a3.75 3.75 0 012.114-.624l4.636-.006V6.75a.75.75 0 00-.75-.75h-5.386a.843.843 0 00-.596.247l-.458.458v10.419z",
   puzzle: "M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.959.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z",
 };
 

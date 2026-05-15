@@ -3,6 +3,7 @@ const TYPE_CONFIG: Record<string, { label: string; color: string }> = {
   "mcp-server": { label: "MCP", color: "text-indigo-700 bg-indigo-50 border-indigo-200" },
   "claude-skill": { label: "Claude Skill", color: "text-violet-700 bg-violet-50 border-violet-200" },
   "codex-skill": { label: "Codex Skill", color: "text-emerald-700 bg-emerald-50 border-emerald-200" },
+  "prompt-library": { label: "Prompt Library", color: "text-orange-700 bg-orange-50 border-orange-200" },
   "agent-tool": { label: "Agent工具", color: "text-blue-700 bg-blue-50 border-blue-200" },
   "llm-plugin": { label: "LLM插件", color: "text-amber-700 bg-amber-50 border-amber-200" },
   "skill": { label: "Skill", color: "text-cyan-700 bg-cyan-50 border-cyan-200" },

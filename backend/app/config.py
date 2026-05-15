@@ -7,7 +7,14 @@ class Settings(BaseSettings):
     supabase_service_role_key: str = ""
     github_token: str = ""
     sync_interval_hours: int = 8
-    cors_origins: str = "http://localhost:5173,http://localhost:3000,https://agentskillshub.top,https://www.agentskillshub.top"
+    cors_origins: str = (
+        "http://localhost:5173,"
+        "http://127.0.0.1:5173,"
+        "http://localhost:3000,"
+        "http://127.0.0.1:3000,"
+        "https://agentskillshub.top,"
+        "https://www.agentskillshub.top"
+    )
     admin_token: str = ""
 
     # BillionMail newsletter integration
@@ -26,6 +33,10 @@ class Settings(BaseSettings):
     resend_api_key: str = ""  # e.g. re_xxxxxxxx
     email_from: str = "Agent Skills Hub <noreply@agentskillshub.top>"
     site_url: str = "https://agentskillshub.top"
+
+    # Feishu / Lark bot webhook (optional)
+    feishu_webhook_url: str = ""
+    feishu_webhook_secret: str = ""
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 

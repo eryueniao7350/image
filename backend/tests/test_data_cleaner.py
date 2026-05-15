@@ -123,6 +123,16 @@ class TestClassify:
         result = cleaner.process([repo])[0]
         assert result["category"] == "agent-tool"
 
+    def test_prompt_library(self):
+        cleaner = DataCleaner()
+        repo = _make_repo(
+            full_name="yaojingang/yao-open-prompts",
+            description="Chinese AI prompt library for work, study, marketing and life",
+            topics=["prompts", "prompt-engineering"],
+        )
+        result = cleaner.process([repo])[0]
+        assert result["category"] == "prompt-library"
+
     def test_uncategorized_fallback(self):
         cleaner = DataCleaner()
         repo = _make_repo(
@@ -178,6 +188,16 @@ class TestInferProjectType:
         )
         result = cleaner.process([repo])[0]
         assert result["project_type"] == "skill"
+
+    def test_prompt_library_type(self):
+        cleaner = DataCleaner()
+        repo = _make_repo(
+            full_name="user/open-prompts",
+            description="An open prompts repository",
+            topics=["prompts"],
+        )
+        result = cleaner.process([repo])[0]
+        assert result["project_type"] == "prompt-library"
 
 
 class TestParseDatetime:

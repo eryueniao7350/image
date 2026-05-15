@@ -1,6 +1,7 @@
 import json
 import logging
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -25,6 +26,8 @@ from app.schemas.skill import (
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api")
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+DRAFTS_DIR = PROJECT_ROOT / "docs" / "drafts"
 
 
 def _cached_json(data, max_age: int = 300) -> JSONResponse:
@@ -36,6 +39,30 @@ def _cached_json(data, max_age: int = 300) -> JSONResponse:
         content=data,
         headers={"Cache-Control": f"public, max-age={max_age}, s-maxage={max_age}"},
     )
+
+
+@router.get("/content/drafts/{slug}")
+def get_draft_content(slug: str):
+    if not slug or "/" in slug or "\\" in slug or ".." in slug:
+        raise HTTPException(status_code=400, detail="Invalid draft slug")
+
+    draft_path = DRAFTS_DIR / f"{slug}.md"
+    if not draft_path.exists() or not draft_path.is_file():
+        raise HTTPException(status_code=404, detail="Draft not found")
+
+    content = draft_path.read_text(encoding="utf-8")
+    title = slug
+    for line in content.splitlines():
+        if line.startswith("# "):
+            title = line[2:].strip()
+            break
+
+    return {
+        "slug": slug,
+        "title": title,
+        "content": content,
+        "updated_at": datetime.fromtimestamp(draft_path.stat().st_mtime, tz=timezone.utc).isoformat(),
+    }
 
 
 @router.get("/skills", response_model=PaginatedSkillsResponse)
@@ -1026,13 +1053,21 @@ _WORKFLOW_META: dict[str, dict] = {
         "description_en": "OpenAI Codex skills",
         "sort_order": 6,
     },
+    "prompt-library": {
+        "icon": "book-open",
+        "title_zh": "提示词库",
+        "title_en": "Prompt Libraries",
+        "description_zh": "可复用的提示词集合与模板仓库",
+        "description_en": "Reusable prompt collections and template repos",
+        "sort_order": 7,
+    },
     "llm-plugin": {
         "icon": "puzzle",
         "title_zh": "LLM 插件",
         "title_en": "LLM Plugins",
         "description_zh": "大语言模型插件与扩展",
         "description_en": "LLM plugins & extensions",
-        "sort_order": 7,
+        "sort_order": 8,
     },
     "youmind-plugin": {
         "icon": "puzzle",
@@ -1040,7 +1075,7 @@ _WORKFLOW_META: dict[str, dict] = {
         "title_en": "YouMind Plugins",
         "description_zh": "YouMind 平台专属插件",
         "description_en": "YouMind platform plugins",
-        "sort_order": 8,
+        "sort_order": 9,
     },
 }
 

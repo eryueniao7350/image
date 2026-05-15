@@ -5,6 +5,7 @@ const CATEGORY_CHIPS = [
   { key: "claude-skill", label: "Claude Skill" },
   { key: "agent-tool", label: "Agent Tool" },
   { key: "codex-skill", label: "Codex Skill" },
+  { key: "prompt-library", label: "Prompt Library" },
   { key: "ai-skill", label: "AI Skill" },
   { key: "llm-plugin", label: "LLM Plugin" },
 ];

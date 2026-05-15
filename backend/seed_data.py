@@ -68,6 +68,7 @@ EXTRA_REPOS = [
     "runningZ1/union-search-skill",
     "Panniantong/Agent-Reach",
     "JimLiu/baoyu-skills",
+    "yaojingang/yao-open-prompts",
     "joeseesun/yt-search-download",
     "joeseesun/anything-to-notebooklm",
     "joeseesun/skill-publisher",
