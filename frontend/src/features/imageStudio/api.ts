@@ -29,6 +29,22 @@ export interface GenerationResultRecord {
   };
 }
 
+export interface GenerationHistoryRecord {
+  id: string;
+  imageType: string;
+  aspectRatio: string;
+  style: string;
+  scene: string;
+  whitespace: string;
+  subjectText: string;
+  extraRequirements: string;
+  finalPrompt: string | null;
+  imageUrl: string | null;
+  status: "pending" | "succeeded" | "failed";
+  creditCost: number;
+  createdAt: string;
+}
+
 export interface StudioApiError extends Error {
   code?: string;
   status?: number;
@@ -93,6 +109,37 @@ export async function fetchMyProfile(): Promise<ProfileRecord> {
   }
 
   return data as ProfileRecord;
+}
+
+export async function fetchGenerationHistory(): Promise<GenerationHistoryRecord[]> {
+  const client = requireSupabase();
+  const { data, error } = await client
+    .from("generations")
+    .select(
+      "id, image_type, aspect_ratio, style, scene, whitespace, subject_text, extra_requirements, final_prompt, image_url, status, credit_cost, created_at",
+    )
+    .order("created_at", { ascending: false })
+    .limit(24);
+
+  if (error) {
+    throw createStudioError(error.message, error.code);
+  }
+
+  return (data ?? []).map((record) => ({
+    id: record.id as string,
+    imageType: record.image_type as string,
+    aspectRatio: record.aspect_ratio as string,
+    style: record.style as string,
+    scene: record.scene as string,
+    whitespace: record.whitespace as string,
+    subjectText: record.subject_text as string,
+    extraRequirements: record.extra_requirements as string,
+    finalPrompt: (record.final_prompt as string | null) ?? null,
+    imageUrl: (record.image_url as string | null) ?? null,
+    status: record.status as GenerationHistoryRecord["status"],
+    creditCost: record.credit_cost as number,
+    createdAt: record.created_at as string,
+  }));
 }
 
 export async function generateImage(
