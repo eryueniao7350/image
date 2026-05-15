@@ -18,31 +18,7 @@ import { Home } from "./pages/Home";
 import { ImageHomePage } from "./pages/ImageHomePage";
 import { LoginPage } from "./pages/LoginPage";
 import { PricingPage } from "./pages/PricingPage";
-
-function StudioPage() {
-  return (
-    <main className="image-shell image-shell--narrow">
-      <section className="image-panel image-panel--stacked">
-        <span className="image-eyebrow">Studio</span>
-        <h1 className="image-title">StudioPage bridge</h1>
-        <p className="image-muted">
-          The protected studio route is mounted and ready for the dedicated page in a later task.
-        </p>
-        <div className="image-hero__actions">
-          <Link className="image-button image-button--primary" to={IMAGE_ROUTE_PATHS.history}>
-            View history bridge
-          </Link>
-          <Link className="image-button image-button--secondary" to={IMAGE_ROUTE_PATHS.pricing}>
-            Review pricing
-          </Link>
-          <Link className="image-button image-button--secondary" to={IMAGE_ROUTE_PATHS.hub}>
-            Open legacy hub
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
-}
+import { StudioPage } from "./pages/StudioPage";
 
 function HistoryPage() {
   return (
