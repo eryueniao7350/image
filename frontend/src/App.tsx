@@ -10,7 +10,6 @@ import { AdminLayout } from "./pages/admin/AdminLayout";
 import { CategoryPage } from "./pages/CategoryPage";
 import { VerifyEmailPage } from "./pages/VerifyEmailPage";
 import { AnalyzerPage } from "./pages/AnalyzerPage";
-import { DraftViewerPage } from "./pages/DraftViewerPage";
 import { ProtectedRoute } from "./features/imageStudio/components/ProtectedRoute";
 import { IMAGE_ROUTE_PATHS } from "./features/imageStudio/constants";
 import { AuthCallbackPage } from "./pages/AuthCallbackPage";
@@ -60,8 +59,6 @@ function App() {
               <Route path="/compare/" element={<ComparePage />} />
               <Route path="/analyzer" element={<AnalyzerPage />} />
               <Route path="/analyzer/" element={<AnalyzerPage />} />
-              <Route path="/draft/:slug" element={<DraftViewerPage />} />
-              <Route path="/draft/:slug/" element={<DraftViewerPage />} />
               <Route path="/verify-email" element={<VerifyEmailPage />} />
               <Route path="/verify-email/" element={<VerifyEmailPage />} />
               <Route path="/admin/*" element={<AdminLayout />} />
