@@ -12,10 +12,10 @@ describe("GenerationForm", () => {
       />,
     );
 
-    const button = screen.getByRole("button", { name: /generating image/i });
+    const button = screen.getByRole("button", { name: /正在生成图片/i });
 
     expect(button).toBeDisabled();
-    expect(button).toHaveTextContent("Generating image...");
+    expect(button).toHaveTextContent("正在生成图片...");
   });
 
   it("shows an active submit button when generation is idle", () => {
@@ -26,7 +26,7 @@ describe("GenerationForm", () => {
       />,
     );
 
-    const button = screen.getByRole("button", { name: /generate image/i });
+    const button = screen.getByRole("button", { name: /生成图片/i });
 
     expect(button).toBeEnabled();
   });
@@ -37,27 +37,27 @@ describe("GenerationForm", () => {
 
     render(<GenerationForm isSubmitting={false} onSubmit={onSubmit} />);
 
-    await user.clear(screen.getByLabelText(/subject or headline idea/i));
-    await user.type(screen.getByLabelText(/subject or headline idea/i), "  Launch graphic  ");
+    await user.clear(screen.getByLabelText(/主体或标题方向/i));
+    await user.type(screen.getByLabelText(/主体或标题方向/i), "  新内容发布宣传图  ");
 
-    await user.clear(screen.getByLabelText(/scene or environment/i));
-    await user.type(screen.getByLabelText(/scene or environment/i), "  Cozy studio set  ");
+    await user.clear(screen.getByLabelText(/场景或环境/i));
+    await user.type(screen.getByLabelText(/场景或环境/i), "  温暖的棚拍场景  ");
 
-    await user.clear(screen.getByLabelText(/composition and whitespace/i));
-    await user.type(screen.getByLabelText(/composition and whitespace/i), "  Leave room for title  ");
+    await user.clear(screen.getByLabelText(/构图与留白/i));
+    await user.type(screen.getByLabelText(/构图与留白/i), "  为标题预留空间  ");
 
-    await user.type(screen.getByLabelText(/extra requirements/i), "  Use warm highlights  ");
+    await user.type(screen.getByLabelText(/补充要求/i), "  使用暖色高光  ");
 
-    await user.click(screen.getByRole("button", { name: /generate image/i }));
+    await user.click(screen.getByRole("button", { name: /生成图片/i }));
 
     expect(onSubmit).toHaveBeenCalledWith({
       imageType: "social-visual",
       aspectRatio: "1:1",
       style: "product",
-      scene: "Cozy studio set",
-      whitespace: "Leave room for title",
-      subjectText: "Launch graphic",
-      extraRequirements: "Use warm highlights",
+      scene: "温暖的棚拍场景",
+      whitespace: "为标题预留空间",
+      subjectText: "新内容发布宣传图",
+      extraRequirements: "使用暖色高光",
     });
   });
 
@@ -66,13 +66,13 @@ describe("GenerationForm", () => {
 
     render(<GenerationForm isSubmitting={false} onSubmit={vi.fn()} />);
 
-    await user.click(screen.getByRole("button", { name: /use creator portrait/i }));
+    await user.click(screen.getByRole("button", { name: /使用“创作者肖像”/i }));
 
-    expect(screen.getByLabelText(/subject or headline idea/i)).toHaveValue("Creator portrait");
-    expect(screen.getByLabelText(/scene or environment/i)).toHaveValue(
-      "Confident creator in a warm studio, natural side light, editorial portrait composition, textured background, relaxed posture.",
+    expect(screen.getByLabelText(/主体或标题方向/i)).toHaveValue("创作者肖像");
+    expect(screen.getByLabelText(/场景或环境/i)).toHaveValue(
+      "在温暖摄影棚中的自信创作者，自然侧光，编辑感肖像构图，带纹理背景，姿态放松。",
     );
-    expect(screen.getByLabelText(/style preset/i)).toHaveValue("portrait");
-    expect(screen.getByLabelText(/aspect ratio/i)).toHaveValue("3:4");
+    expect(screen.getByLabelText(/风格预设/i)).toHaveValue("portrait");
+    expect(screen.getByLabelText(/图片比例/i)).toHaveValue("3:4");
   });
 });

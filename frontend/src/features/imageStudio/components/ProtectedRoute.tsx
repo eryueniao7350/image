@@ -14,7 +14,7 @@ export function ProtectedRoute({ children }: ProtectedRouteProps) {
   if (loading) {
     return (
       <div aria-live="polite" role="status">
-        Loading...
+        加载中...
       </div>
     );
   }

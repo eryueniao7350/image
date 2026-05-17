@@ -27,21 +27,20 @@ export function UpgradeModal({ open, onClose }: UpgradeModalProps) {
       }}
     >
       <section className="image-panel image-panel--stacked" style={{ width: "min(560px, 100%)" }}>
-        <span className="image-eyebrow">Credits needed</span>
+        <span className="image-eyebrow">积分不足</span>
         <h2 className="image-title" id="upgrade-modal-title">
-          You&apos;re out of generation credits.
+          你的生成积分已经用完。
         </h2>
         <p className="image-muted">
-          This MVP keeps the upgrade path lightweight for now, but we still need to block new
-          generations once your balance reaches zero.
+          当前首版还没有接入真实支付，但当积分归零后，我们会先拦住新的生成请求，并引导你查看升级说明。
         </p>
 
         <div className="image-hero__actions">
           <Link className="image-button image-button--primary" to={IMAGE_ROUTE_PATHS.pricing}>
-            Review pricing
+            查看升级说明
           </Link>
           <button className="image-button image-button--secondary" onClick={onClose} type="button">
-            Keep browsing
+            继续浏览
           </button>
         </div>
       </section>

@@ -28,7 +28,7 @@ export function CreditBadge({ credits, loading = false }: CreditBadgeProps) {
   return (
     <div aria-live="polite" style={badgeStyle}>
       <span aria-hidden="true" style={dotStyle} />
-      <span>{loading ? "Loading credits..." : `${credits ?? 0} credits remaining`}</span>
+      <span>{loading ? "积分加载中..." : `剩余 ${credits ?? 0} 积分`}</span>
     </div>
   );
 }

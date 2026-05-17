@@ -31,20 +31,19 @@ export function StudioPage() {
 
   const profileStatus = isProfileMissing ? (
     <div className="image-note">
-      <strong>Finishing your studio setup</strong>
+      <strong>正在完成你的工作台初始化</strong>
       <span>
-        Your account is authenticated, but the studio profile record is not ready yet. Reload to
-        check again, or sign out and back in if the issue persists.
+        你的账号已经完成认证，但工作台资料记录还没准备好。你可以先刷新重试；如果持续异常，再退出后重新登录。
       </span>
       <div className="image-hero__actions" style={{ marginTop: "8px" }}>
         <button className="image-button image-button--secondary" onClick={() => void reloadProfile()} type="button">
-          Reload profile
+          重新加载资料
         </button>
       </div>
     </div>
   ) : isProfileUnavailable ? (
     <div className="image-alert image-alert--error">
-      {profileError?.message ?? "We could not load your studio profile right now."}
+      {profileError?.message ?? "当前无法读取你的工作台资料。"}
     </div>
   ) : null;
 
@@ -54,7 +53,7 @@ export function StudioPage() {
     }
 
     if (!profile) {
-      setErrorMessage(profileError?.message ?? "Unable to load your profile right now.");
+      setErrorMessage(profileError?.message ?? "当前无法读取你的资料。");
       return;
     }
 
@@ -85,6 +84,7 @@ export function StudioPage() {
       }
 
       setErrorMessage(studioError.message || "Unable to generate an image right now.");
+      setErrorMessage(studioError.message || "当前无法生成图片。");
     } finally {
       setIsSubmitting(false);
     }
@@ -103,16 +103,16 @@ export function StudioPage() {
           <>
             <section className="image-panel">
               <div className="image-panel__header">
-                <span>Studio access check</span>
-                <span>{isProfileMissing ? "Recoverable" : "Needs retry"}</span>
+                <span>工作台访问检查</span>
+                <span>{isProfileMissing ? "可恢复" : "需要重试"}</span>
               </div>
               <div className="image-tag-grid">
                 <div className="image-tag-card">
-                  <strong>{isProfileMissing ? "Profile record pending" : "Profile load failed"}</strong>
+                  <strong>{isProfileMissing ? "资料记录尚未就绪" : "资料加载失败"}</strong>
                   <p>
                     {isProfileMissing
-                      ? "Your sign-in worked, but your studio profile has not shown up yet. This can happen during setup drift or a delayed backfill."
-                      : "We could not read the studio profile needed to check credits and personalize the workspace."}
+                      ? "登录已经成功，但你的工作台资料还没有生成完成。这通常是初始化延迟或补录还没跑完。"
+                      : "系统暂时无法读取用于校验积分和个性化工作台的资料记录。"}
                   </p>
                 </div>
                 <div className="image-hero__actions" style={{ marginTop: 0 }}>
@@ -121,14 +121,14 @@ export function StudioPage() {
                     onClick={() => void reloadProfile()}
                     type="button"
                   >
-                    Reload profile
+                    重新加载资料
                   </button>
                   <button
                     className="image-button image-button--secondary"
                     onClick={() => void signOut()}
                     type="button"
                   >
-                    Sign out and try again
+                    退出后重试
                   </button>
                 </div>
               </div>

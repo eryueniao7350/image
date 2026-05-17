@@ -63,8 +63,8 @@ export function HistoryPage() {
 
       <section className="image-panel">
         <div className="image-panel__header">
-          <span>Selected run</span>
-          <span>{selected ? formatDateTime(selected.createdAt) : "Pick a generation"}</span>
+          <span>当前选中记录</span>
+          <span>{selected ? formatDateTime(selected.createdAt) : "请选择一条记录"}</span>
         </div>
 
         {selected ? (
@@ -82,22 +82,21 @@ export function HistoryPage() {
               </figure>
             ) : (
               <div className="image-tag-card">
-                <strong>No saved preview</strong>
+                <strong>没有可预览图片</strong>
                 <p>
-                  This run is marked as <strong>{selected.status}</strong>, so there is no stored
-                  image to review yet.
+                  当前记录状态为 <strong>{selected.status}</strong>，因此暂时没有可查看的保存图片。
                 </p>
               </div>
             )}
 
             <div className="image-note">
-              <strong>Subject summary</strong>
+              <strong>主体摘要</strong>
               <span>{selected.subjectText}</span>
             </div>
 
             <div className="image-note">
-              <strong>Final prompt</strong>
-              <span>{selected.finalPrompt ?? "No final prompt was saved for this run."}</span>
+              <strong>最终提示词</strong>
+              <span>{selected.finalPrompt ?? "这次记录没有保存最终提示词。"}</span>
             </div>
 
             <div
@@ -105,56 +104,56 @@ export function HistoryPage() {
               style={{ gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))" }}
             >
               <div className="image-tag-card">
-                <strong>Image type</strong>
+                <strong>图片类型</strong>
                 <p>{titleCase(selected.imageType)}</p>
               </div>
               <div className="image-tag-card">
-                <strong>Style</strong>
+                <strong>风格</strong>
                 <p>{titleCase(selected.style)}</p>
               </div>
               <div className="image-tag-card">
-                <strong>Aspect ratio</strong>
+                <strong>比例</strong>
                 <p>{selected.aspectRatio}</p>
               </div>
               <div className="image-tag-card">
-                <strong>Credit cost</strong>
+                <strong>消耗积分</strong>
                 <p>{selected.creditCost}</p>
               </div>
               <div className="image-tag-card">
-                <strong>Status</strong>
+                <strong>状态</strong>
                 <p>{titleCase(selected.status)}</p>
               </div>
             </div>
 
             <div className="image-note">
-              <strong>Scene</strong>
+              <strong>场景</strong>
               <span>{selected.scene}</span>
             </div>
 
             <div className="image-note">
-              <strong>Whitespace guidance</strong>
+              <strong>留白要求</strong>
               <span>{selected.whitespace}</span>
             </div>
 
             <div className="image-note">
-              <strong>Extra requirements</strong>
-              <span>{selected.extraRequirements || "No extra requirements were added."}</span>
+              <strong>补充要求</strong>
+              <span>{selected.extraRequirements || "这次没有补充额外要求。"}</span>
             </div>
           </div>
         ) : (
           <div className="image-tag-grid" style={{ marginTop: "18px" }}>
             <div className="image-tag-card">
-              <strong>No generation selected</strong>
+              <strong>还没有选中记录</strong>
               <p>
-                Start a new image in the studio, or choose one from the list once your history loads.
+                你可以先去工作台生成图片，或在历史记录加载完成后从列表里选一条查看。
               </p>
             </div>
             <div className="image-hero__actions" style={{ marginTop: 0 }}>
               <Link className="image-button image-button--primary" to={IMAGE_ROUTE_PATHS.studio}>
-                Open studio
+                打开工作台
               </Link>
               <button className="image-button image-button--secondary" onClick={() => void reload()} type="button">
-                Reload history
+                重新加载
               </button>
             </div>
           </div>

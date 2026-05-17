@@ -32,7 +32,7 @@ describe("ProtectedRoute", () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByRole("status")).toHaveTextContent("Loading...");
+    expect(screen.getByRole("status")).toHaveTextContent("加载中...");
     expect(screen.queryByText("secret studio")).not.toBeInTheDocument();
   });
 

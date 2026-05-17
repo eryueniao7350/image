@@ -14,8 +14,8 @@ export function GenerationResult({
   return (
     <section className="image-panel">
       <div className="image-panel__header">
-        <span>Latest result</span>
-        <span>{result ? "Ready to review" : "Waiting for your first generation"}</span>
+        <span>最新结果</span>
+        <span>{result ? "可查看" : "等待首次生成"}</span>
       </div>
 
       {errorMessage ? (
@@ -24,7 +24,7 @@ export function GenerationResult({
 
       {isSubmitting ? (
         <p className="image-alert image-alert--success" style={{ marginTop: errorMessage ? "14px" : "0" }}>
-          Your image is being generated now. Keep this tab open while the result comes back.
+          图片正在生成中，请保持当前页面打开，等待结果返回。
         </p>
       ) : null}
 
@@ -42,17 +42,17 @@ export function GenerationResult({
           </figure>
 
           <div className="image-note">
-            <strong>Final prompt</strong>
+            <strong>最终提示词</strong>
             <span>{result.prompt}</span>
           </div>
 
           <div className="image-note">
-            <strong>Generation ID</strong>
+            <strong>生成记录 ID</strong>
             <code>{result.generationId}</code>
           </div>
 
           <div className="image-note">
-            <strong>Credits remaining</strong>
+            <strong>剩余积分</strong>
             <span>{result.creditsRemaining}</span>
           </div>
 
@@ -62,10 +62,9 @@ export function GenerationResult({
         </div>
       ) : (
         <div className="image-tag-card" style={{ marginTop: "18px" }}>
-          <strong>No image yet</strong>
+          <strong>还没有图片</strong>
           <p>
-            Your generated image, final prompt, and the updated credit count will show up here
-            after a successful run.
+            成功生成后，这里会显示图片结果、最终提示词和最新积分余额。
           </p>
         </div>
       )}

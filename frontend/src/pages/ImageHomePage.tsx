@@ -13,20 +13,19 @@ export function ImageHomePage() {
     <main className="image-shell">
       <section className="image-hero">
         <div className="image-hero__copy">
-          <span className="image-eyebrow">Image MVP</span>
-          <h1>Create scroll-stopping visuals for your next post, video, or drop.</h1>
+          <span className="image-eyebrow">图片 MVP</span>
+          <h1>为你的下一条内容、视频或上新活动生成更吸睛的视觉图。</h1>
           <p>
-            {IMAGE_APP_NAME} is a conversion-first image studio for content creators who need
-            clean thumbnails, vertical promos, and branded visuals without getting stuck in a
-            slow design loop. Start with a prompt, choose a ratio, and move into the protected
-            studio flow when you are ready to create.
+            {IMAGE_APP_NAME} 是一个面向内容创作者的 AI 图片工作台。你可以先选类型、比例和风格，
+            再补充主体与场景要求，快速生成适合封面、宣传图和品牌视觉的内容，而不用自己从零打磨
+            长提示词。
           </p>
           <div className="image-hero__actions">
             <Link className="image-button image-button--primary" to={IMAGE_ROUTE_PATHS.studio}>
-              Start generating
+              开始生成
             </Link>
             <Link className="image-button image-button--secondary" to={IMAGE_ROUTE_PATHS.pricing}>
-              View pricing
+              查看升级
             </Link>
           </div>
           <ul className="image-checklist">
@@ -38,8 +37,8 @@ export function ImageHomePage() {
 
         <div className="image-panel">
           <div className="image-panel__header">
-            <span>Popular prompt patterns</span>
-            <Link to={IMAGE_ROUTE_PATHS.login}>Magic-link sign in</Link>
+            <span>热门提示词示例</span>
+            <Link to={IMAGE_ROUTE_PATHS.login}>邮箱登录</Link>
           </div>
           <div className="image-samples">
             {IMAGE_PROMPT_EXAMPLES.map((example) => (
@@ -60,7 +59,7 @@ export function ImageHomePage() {
       <section className="image-grid">
         <article className="image-panel">
           <div className="image-panel__header">
-            <span>MVP aspect ratios</span>
+            <span>首版支持比例</span>
           </div>
           <div className="image-tag-grid">
             {IMAGE_ASPECT_RATIO_OPTIONS.map((option) => (
@@ -75,7 +74,7 @@ export function ImageHomePage() {
 
         <article className="image-panel">
           <div className="image-panel__header">
-            <span>Creator-friendly style presets</span>
+            <span>创作者常用风格预设</span>
           </div>
           <div className="image-tag-grid">
             {IMAGE_GENERATION_STYLE_OPTIONS.map((option) => (

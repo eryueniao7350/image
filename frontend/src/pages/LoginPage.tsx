@@ -37,7 +37,7 @@ export function LoginPage() {
     setSuccess("");
 
     if (authUnavailable) {
-      setError("Magic-link sign-in is unavailable because Supabase is not configured in this environment.");
+      setError("当前环境尚未完成 Supabase 配置，暂时无法发送魔法链接。");
       return;
     }
 
@@ -45,9 +45,9 @@ export function LoginPage() {
 
     try {
       await signInWithMagicLink(email, nextPath);
-      setSuccess(`Magic link sent to ${email}. Open the email on this device to continue.`);
+      setSuccess(`魔法链接已发送到 ${email}。请在当前设备上打开邮件继续登录。`);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Unable to send magic link.";
+      const message = err instanceof Error ? err.message : "发送魔法链接失败。";
       setError(message);
     } finally {
       setSubmitting(false);
@@ -57,27 +57,27 @@ export function LoginPage() {
   return (
     <main className="image-shell image-shell--narrow">
       <section className="image-panel image-panel--stacked">
-        <span className="image-eyebrow">Sign in</span>
-        <h1 className="image-title">Use a magic link to open {IMAGE_APP_NAME}.</h1>
+        <span className="image-eyebrow">登录</span>
+        <h1 className="image-title">通过魔法链接登录 {IMAGE_APP_NAME}。</h1>
         <p className="image-muted">
-          We will email a secure sign-in link and return you to <code>{nextPath}</code>.
+          我们会把安全登录链接发到你的邮箱，并在验证后带你回到 <code>{nextPath}</code>。
         </p>
         {authUnavailable ? (
           <p className="image-alert image-alert--error">
-            Sign-in is unavailable in this environment until Supabase credentials are configured.
+            当前环境尚未完成 Supabase 凭据配置，暂时无法使用登录功能。
           </p>
         ) : null}
 
         <form className="image-form" onSubmit={handleSubmit}>
           <label className="image-label" htmlFor="email">
-            Email
+            邮箱
           </label>
           <input
             id="email"
             type="email"
             autoComplete="email"
             className="image-input"
-            placeholder="you@company.com"
+            placeholder="you@example.com"
             disabled={authUnavailable}
             required
             value={email}
@@ -92,19 +92,19 @@ export function LoginPage() {
             disabled={submitting || authUnavailable}
             type="submit"
           >
-            {authUnavailable ? "Magic link unavailable" : submitting ? "Sending link..." : "Send magic link"}
+            {authUnavailable ? "当前不可用" : submitting ? "发送中..." : "发送魔法链接"}
           </button>
         </form>
 
         <div className="image-note">
-          <strong>Callback URL</strong>
+          <strong>回调地址</strong>
           <code>{callbackUrl}</code>
         </div>
 
         <p className="image-muted">
-          Need context first? <Link to={buildLoginPath(IMAGE_ROUTE_PATHS.history)}>Try the history route</Link> or{" "}
-          <Link to={IMAGE_ROUTE_PATHS.pricing}>review pricing</Link>. You can also visit the{" "}
-          <Link to={IMAGE_ROUTE_PATHS.hub}>legacy hub</Link>.
+          想先看看内容？你可以先去 <Link to={buildLoginPath(IMAGE_ROUTE_PATHS.history)}>生成历史</Link> 或{" "}
+          <Link to={IMAGE_ROUTE_PATHS.pricing}>升级说明</Link>，也可以返回{" "}
+          <Link to={IMAGE_ROUTE_PATHS.hub}>旧版站点</Link>。
         </p>
       </section>
     </main>

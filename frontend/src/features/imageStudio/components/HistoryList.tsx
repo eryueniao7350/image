@@ -33,14 +33,14 @@ function truncateSummary(value: string, maxLength = 84) {
 
 function statusLabel(status: GenerationHistoryRecord["status"]) {
   if (status === "succeeded") {
-    return "Ready";
+    return "成功";
   }
 
   if (status === "failed") {
-    return "Failed";
+    return "失败";
   }
 
-  return "Processing";
+  return "处理中";
 }
 
 function statusTone(status: GenerationHistoryRecord["status"]) {
@@ -65,9 +65,9 @@ export function HistoryList({
   return (
     <section className="image-panel">
       <div className="image-panel__header">
-        <span>Generation history</span>
+        <span>生成历史</span>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span>{loading ? "Loading..." : `${entries.length} recent runs`}</span>
+          <span>{loading ? "加载中..." : `最近 ${entries.length} 条记录`}</span>
           {onReload ? (
             <button
               className="image-button image-button--secondary"
@@ -75,23 +75,22 @@ export function HistoryList({
               style={{ padding: "8px 14px" }}
               type="button"
             >
-              Refresh
+              刷新
             </button>
           ) : null}
         </div>
       </div>
 
       <p className="image-muted">
-        Review recent generations, compare prompts, and reopen the full output details without
-        changing anything yet.
+        在这里查看最近生成记录、对比提示词，并重新打开本次生成的完整细节。
       </p>
 
       {loading ? (
         <div className="image-tag-grid" style={{ marginTop: "18px" }}>
           {Array.from({ length: 3 }).map((_, index) => (
             <div className="image-tag-card" key={index}>
-              <strong>Loading generation...</strong>
-              <p>Pulling your most recent image requests and saved prompts.</p>
+              <strong>正在加载记录...</strong>
+              <p>正在读取你最近的图片请求和保存下来的提示词。</p>
             </div>
           ))}
         </div>
@@ -193,7 +192,7 @@ export function HistoryList({
                   </p>
 
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                    {[entry.imageType, entry.style, entry.aspectRatio, `${entry.creditCost} credit`].map((item) => (
+                    {[entry.imageType, entry.style, entry.aspectRatio, `${entry.creditCost} 积分`].map((item) => (
                       <span
                         key={item}
                         style={{
@@ -215,9 +214,9 @@ export function HistoryList({
         </div>
       ) : (
         <div className="image-tag-card" style={{ marginTop: "18px" }}>
-          <strong>No history yet</strong>
+          <strong>还没有历史记录</strong>
           <p>
-            Your completed and in-progress generations will show up here after the first studio run.
+            完成首次生成后，已完成和进行中的记录都会显示在这里。
           </p>
         </div>
       )}
