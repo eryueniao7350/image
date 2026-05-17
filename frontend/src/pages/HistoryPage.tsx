@@ -5,6 +5,7 @@ import type { GenerationHistoryRecord } from "../features/imageStudio/api";
 import { HistoryList } from "../features/imageStudio/components/HistoryList";
 import { StudioShell } from "../features/imageStudio/components/StudioShell";
 import { IMAGE_ROUTE_PATHS } from "../features/imageStudio/constants";
+import { useBillingActions } from "../features/imageStudio/hooks/useBillingActions";
 import { useGenerationHistory } from "../features/imageStudio/hooks/useGenerationHistory";
 import { useProfile } from "../features/imageStudio/hooks/useProfile";
 
@@ -35,6 +36,13 @@ export function HistoryPage() {
   const { profile, loading: profileLoading, error: profileError } = useProfile();
   const { history, loading, error, reload } = useGenerationHistory();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const {
+    errorMessage: billingErrorMessage,
+    isCheckingOut,
+    isOpeningPortal,
+    openCustomerPortal,
+    startCheckout,
+  } = useBillingActions();
 
   const selected: GenerationHistoryRecord | null =
     history.find((entry) => entry.id === selectedId) ?? history[0] ?? null;
@@ -46,7 +54,12 @@ export function HistoryPage() {
       credits={profile?.credits}
       creditsLoading={profileLoading}
       email={profile?.email ?? user?.email ?? null}
+      billingStatus={billingErrorMessage ? <div className="image-alert image-alert--error">{billingErrorMessage}</div> : null}
+      isCheckingOut={isCheckingOut}
+      isOpeningPortal={isOpeningPortal}
+      onManageSubscription={openCustomerPortal}
       onSignOut={signOut}
+      onUpgrade={startCheckout}
       profileStatus={
         loadError ? (
           <div className="image-alert image-alert--error">{loadError}</div>

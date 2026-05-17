@@ -10,6 +10,7 @@ import { GenerationForm } from "../features/imageStudio/components/GenerationFor
 import { GenerationResult } from "../features/imageStudio/components/GenerationResult";
 import { StudioShell } from "../features/imageStudio/components/StudioShell";
 import { UpgradeModal } from "../features/imageStudio/components/UpgradeModal";
+import { useBillingActions } from "../features/imageStudio/hooks/useBillingActions";
 import { useProfile } from "../features/imageStudio/hooks/useProfile";
 
 export function StudioPage() {
@@ -25,6 +26,14 @@ export function StudioPage() {
   const [isUpgradeOpen, setUpgradeOpen] = useState(false);
   const [result, setResult] = useState<GenerationResultRecord | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const {
+    errorMessage: billingErrorMessage,
+    clearError: clearBillingError,
+    isCheckingOut,
+    isOpeningPortal,
+    openCustomerPortal,
+    startCheckout,
+  } = useBillingActions();
 
   const isProfileMissing = !profileLoading && !profile && profileError?.code === "PROFILE_NOT_READY";
   const isProfileUnavailable = !profileLoading && !profile && Boolean(profileError) && !isProfileMissing;
@@ -58,6 +67,7 @@ export function StudioPage() {
     }
 
     if ((profile?.credits ?? 0) < 1) {
+      clearBillingError();
       setUpgradeOpen(true);
       return;
     }
@@ -80,10 +90,10 @@ export function StudioPage() {
       const studioError = submitError as StudioApiError;
 
       if (studioError.code === "INSUFFICIENT_CREDITS") {
+        clearBillingError();
         setUpgradeOpen(true);
       }
 
-      setErrorMessage(studioError.message || "Unable to generate an image right now.");
       setErrorMessage(studioError.message || "当前无法生成图片。");
     } finally {
       setIsSubmitting(false);
@@ -96,7 +106,12 @@ export function StudioPage() {
         credits={profile?.credits}
         creditsLoading={profileLoading}
         email={profile?.email ?? user?.email ?? null}
+        billingStatus={billingErrorMessage ? <div className="image-alert image-alert--error">{billingErrorMessage}</div> : null}
+        isCheckingOut={isCheckingOut}
+        isOpeningPortal={isOpeningPortal}
+        onManageSubscription={openCustomerPortal}
         onSignOut={signOut}
+        onUpgrade={startCheckout}
         profileStatus={profileStatus}
       >
         {isProfileMissing || isProfileUnavailable ? (
@@ -151,7 +166,16 @@ export function StudioPage() {
         )}
       </StudioShell>
 
-      <UpgradeModal onClose={() => setUpgradeOpen(false)} open={isUpgradeOpen} />
+      <UpgradeModal
+        errorMessage={billingErrorMessage}
+        isSubmitting={isCheckingOut}
+        onClose={() => {
+          clearBillingError();
+          setUpgradeOpen(false);
+        }}
+        onUpgrade={startCheckout}
+        open={isUpgradeOpen}
+      />
     </>
   );
 }

@@ -50,6 +50,11 @@ export interface StudioApiError extends Error {
   status?: number;
 }
 
+export interface BillingSessionRecord {
+  url: string;
+  sessionId?: string;
+}
+
 function requireSupabase() {
   if (!supabase) {
     throw new Error("Supabase is not configured.");
@@ -155,4 +160,26 @@ export async function generateImage(
   }
 
   return data as GenerationResultRecord;
+}
+
+export async function createCheckoutSession(): Promise<BillingSessionRecord> {
+  const client = requireSupabase();
+  const { data, error } = await client.functions.invoke("create-checkout-session");
+
+  if (error) {
+    throw await normalizeFunctionError(error);
+  }
+
+  return data as BillingSessionRecord;
+}
+
+export async function createPortalSession(): Promise<BillingSessionRecord> {
+  const client = requireSupabase();
+  const { data, error } = await client.functions.invoke("create-portal-session");
+
+  if (error) {
+    throw await normalizeFunctionError(error);
+  }
+
+  return data as BillingSessionRecord;
 }

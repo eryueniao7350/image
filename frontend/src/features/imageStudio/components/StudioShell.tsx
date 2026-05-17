@@ -9,6 +9,11 @@ interface StudioShellProps {
   creditsLoading?: boolean;
   email?: string | null;
   onSignOut: () => Promise<void> | void;
+  onUpgrade?: () => Promise<void> | void;
+  onManageSubscription?: () => Promise<void> | void;
+  billingStatus?: ReactNode;
+  isCheckingOut?: boolean;
+  isOpeningPortal?: boolean;
   profileStatus?: ReactNode;
 }
 
@@ -18,6 +23,11 @@ export function StudioShell({
   creditsLoading = false,
   email,
   onSignOut,
+  onUpgrade,
+  onManageSubscription,
+  billingStatus,
+  isCheckingOut = false,
+  isOpeningPortal = false,
   profileStatus,
 }: StudioShellProps) {
   return (
@@ -57,19 +67,41 @@ export function StudioShell({
               <p>{email ?? "未知用户"}</p>
             </div>
             <div className="image-tag-card">
-              <strong>想看升级说明？</strong>
+              <strong>想继续生成更多图片？</strong>
               <p>
-                首版暂时不接真实支付，但当积分用完时，升级入口和说明页已经准备好。
+                Stripe 订阅入口已经接好。积分用完后可以直接升级，付费后再用 Customer Portal 管理订阅。
               </p>
             </div>
             <div className="image-hero__actions" style={{ marginTop: 0 }}>
-              <Link className="image-button image-button--secondary" to={IMAGE_ROUTE_PATHS.pricing}>
-                升级说明
-              </Link>
+              {onUpgrade ? (
+                <button
+                  className="image-button image-button--primary"
+                  disabled={isCheckingOut || isOpeningPortal}
+                  onClick={() => void onUpgrade()}
+                  type="button"
+                >
+                  {isCheckingOut ? "正在跳转支付..." : "升级 Pro"}
+                </button>
+              ) : (
+                <Link className="image-button image-button--primary" to={IMAGE_ROUTE_PATHS.pricing}>
+                  查看套餐
+                </Link>
+              )}
+              {onManageSubscription ? (
+                <button
+                  className="image-button image-button--secondary"
+                  disabled={isCheckingOut || isOpeningPortal}
+                  onClick={() => void onManageSubscription()}
+                  type="button"
+                >
+                  {isOpeningPortal ? "正在打开..." : "管理订阅"}
+                </button>
+              ) : null}
               <Link className="image-button image-button--secondary" to={IMAGE_ROUTE_PATHS.hub}>
                 返回旧站
               </Link>
             </div>
+            {billingStatus ? <div style={{ marginTop: "16px" }}>{billingStatus}</div> : null}
           </div>
         </aside>
       </section>
