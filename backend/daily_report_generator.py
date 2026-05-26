@@ -22,14 +22,49 @@ SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 SITE_URL = os.getenv("SITE_URL", "https://agentskillshub.top")
 
 
+def parse_datetime(value):
+    """Parse ISO-ish timestamps into timezone-aware datetimes when possible."""
+    if not value:
+        return None
+    if isinstance(value, datetime.datetime):
+        return value if value.tzinfo else value.replace(tzinfo=datetime.timezone.utc)
+    try:
+        parsed = datetime.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    return parsed if parsed.tzinfo else parsed.replace(tzinfo=datetime.timezone.utc)
+
+
+def filter_and_rank_skills(skills: list, cutoff_dt: datetime.datetime) -> list:
+    """Keep recent skills and rank them consistently with the DB query."""
+    recent = []
+    for skill in skills:
+        first_seen = parse_datetime(skill.get("first_seen"))
+        if not first_seen or first_seen < cutoff_dt:
+            continue
+        if (skill.get("stars") or 0) < 20:
+            continue
+        recent.append(skill)
+
+    recent.sort(
+        key=lambda s: (
+            s.get("star_momentum") is None,
+            -(s.get("star_momentum") or 0),
+            -(s.get("stars") or 0),
+        )
+    )
+    return recent[:50]
+
+
 def fetch_via_rest(cutoff_iso: str):
     """Fetch new skills via Supabase REST API."""
     import httpx
 
     headers = {"apikey": SUPABASE_ANON_KEY, "Authorization": f"Bearer {SUPABASE_ANON_KEY}"}
     base = f"{SUPABASE_URL}/rest/v1/skills"
+    cutoff_dt = parse_datetime(cutoff_iso)
 
-    # New skills in last 48h, ordered by star gain
+    # Preferred query: ask Supabase to filter and sort on the server.
     params = {
         "select": "repo_full_name,repo_name,author_name,description,stars,prev_stars,category,score,quality_score,first_seen,created_at,star_momentum",
         "first_seen": f"gte.{cutoff_iso}",
@@ -37,9 +72,27 @@ def fetch_via_rest(cutoff_iso: str):
         "order": "star_momentum.desc.nullslast,stars.desc",
         "limit": "50",
     }
-    resp = httpx.get(base, headers=headers, params=params, timeout=30)
+    try:
+        resp = httpx.get(base, headers=headers, params=params, timeout=30)
+        resp.raise_for_status()
+        return resp.json()
+    except httpx.HTTPStatusError as exc:
+        body = exc.response.text[:300]
+        print(f"Primary REST query failed ({exc.response.status_code}): {body}")
+        if exc.response.status_code != 500 or "statement timeout" not in body:
+            raise
+        print("Falling back to recent indexed rows and ranking locally")
+
+    # Fallback: pull recent inserts by primary key, then filter/sort locally.
+    fallback_params = {
+        "select": "id,repo_full_name,repo_name,author_name,description,stars,prev_stars,category,score,quality_score,first_seen,created_at,star_momentum",
+        "stars": "gte.20",
+        "order": "id.desc",
+        "limit": "200",
+    }
+    resp = httpx.get(base, headers=headers, params=fallback_params, timeout=30)
     resp.raise_for_status()
-    return resp.json()
+    return filter_and_rank_skills(resp.json(), cutoff_dt)
 
 
 def fetch_via_db(cutoff_iso: str):
@@ -79,18 +132,14 @@ def generate_report(skills: list, today: str) -> str:
         prev = s.get("prev_stars", 0) or 0
         gain = stars - prev
         created = s.get("created_at", "")
-        if isinstance(created, datetime.datetime):
-            created = created.isoformat()
+        created_dt = parse_datetime(created)
+        if created_dt:
+            created = created_dt.isoformat()
 
         # Mark truly new projects (created < 2 weeks ago)
         is_new = False
-        if created:
-            try:
-                ct = datetime.datetime.fromisoformat(str(created).replace("Z", "+00:00"))
-                if (datetime.datetime.now(datetime.timezone.utc) - ct).days <= 14:
-                    is_new = True
-            except Exception:
-                pass
+        if created_dt and (datetime.datetime.now(datetime.timezone.utc) - created_dt).days <= 14:
+            is_new = True
 
         new_badge = "🆕 " if is_new else ""
         gain_str = f"+{gain}" if gain > 0 else str(gain)
