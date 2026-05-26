@@ -30,18 +30,26 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build static site
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-        run: npm run build
+        run: |
+          npx tsc -b
+          npx vite build
+          node scripts/generate-skill-pages.mjs
+          node scripts/generate-scenario-pages.mjs
+          node scripts/generate-comparison-pages.mjs
+          node scripts/generate-badges.mjs
+          node scripts/generate-rss.mjs
+          node scripts/generate-sitemap.mjs
 
       - name: Create IndexNow key verification file
         run: |
@@ -71,7 +79,7 @@ jobs:
       - name: Fetch live sitemaps
         run: |
           mkdir -p sitemaps
-          for f in sitemap-static sitemap-categories sitemap-top sitemap-mid sitemap-rest; do
+          for f in sitemap-static sitemap-categories sitemap-top sitemap-mid sitemap-rest sitemap-scenarios sitemap-comparisons; do
             curl -sL "https://agentskillshub.top/${f}.xml" -o "sitemaps/${f}.xml" 2>/dev/null || true
           done
 
@@ -79,7 +87,6 @@ jobs:
         run: |
           INDEXNOW_KEY="a52f1d0890354e5b84d0e4e1ba17bd84"
 
-          # Extract all URLs from downloaded sitemaps
           URLS=$(grep -oP '(?<=<loc>)[^<]+' sitemaps/sitemap*.xml 2>/dev/null || true)
 
           if [ -z "$URLS" ]; then
@@ -90,25 +97,21 @@ jobs:
           URL_COUNT=$(echo "$URLS" | wc -l | tr -d ' ')
           echo "Found $URL_COUNT URLs, submitting in batches of 2000..."
 
-          # Submit in batches of 2000 (IndexNow limit is 10000)
           BATCH=0
           echo "$URLS" | while mapfile -t -n 2000 CHUNK && [ ${#CHUNK[@]} -gt 0 ]; do
             BATCH=$((BATCH+1))
             BATCH_COUNT=${#CHUNK[@]}
             echo "Batch $BATCH: $BATCH_COUNT URLs"
 
-            # Build JSON payload via file to avoid argument list too long
             URL_JSON=$(printf '%s\n' "${CHUNK[@]}" | jq -R -s 'split("\n") | map(select(length > 0))')
             cat > /tmp/indexnow_payload.json <<EOJSON
           {"host":"agentskillshub.top","key":"${INDEXNOW_KEY}","keyLocation":"https://agentskillshub.top/${INDEXNOW_KEY}.txt","urlList":${URL_JSON}}
           EOJSON
 
-            # Submit to Yandex
             YANDEX_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "https://yandex.com/indexnow" \
               -H "Content-Type: application/json; charset=utf-8" -d @/tmp/indexnow_payload.json)
             echo "  Yandex: HTTP $YANDEX_CODE"
 
-            # Submit to Bing
             BING_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "https://www.bing.com/indexnow" \
               -H "Content-Type: application/json; charset=utf-8" -d @/tmp/indexnow_payload.json)
             echo "  Bing: HTTP $BING_CODE"
