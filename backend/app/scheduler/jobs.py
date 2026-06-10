@@ -652,6 +652,19 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
 
         logger.info("Database upsert complete: %d new, %d updated", new_count, updated_count)
 
+        if fast_sync:
+            sync_log.status = "completed"
+            sync_log.repos_found = len(cleaned)
+            sync_log.repos_new = new_count
+            sync_log.repos_updated = updated_count
+            sync_log.finished_at = datetime.now(timezone.utc)
+            db.commit()
+            logger.info(
+                "Fast sync completed: %d found, %d new, %d updated",
+                len(cleaned), new_count, updated_count,
+            )
+            return
+
         scoring_engine = ScoringEngine()
         scoring_engine.score_all(db)
 
