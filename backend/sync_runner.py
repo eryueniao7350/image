@@ -28,11 +28,17 @@ else:
     os.environ.pop("DATABASE_URL", None)
     logger.info("Using default local SQLite database")
 
+from app.database import Base, engine  # noqa: E402
 from app.scheduler.jobs import sync_all_skills  # noqa: E402
+import app.models.admin  # noqa: E402,F401
+import app.models.skill  # noqa: E402,F401
 
 
 def main():
     logger.info("Starting sync runner...")
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables are ready")
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
