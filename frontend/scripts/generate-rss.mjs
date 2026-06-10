@@ -8,6 +8,8 @@
 import { writeFileSync } from "fs";
 import { SUPABASE_URL, SUPABASE_ANON_KEY, SITE, esc } from "./shared-utils.mjs";
 
+const EMPTY_ITEMS = [];
+
 function rfc822(dateStr) {
   if (!dateStr) return "";
   return new Date(dateStr).toUTCString();
@@ -48,22 +50,52 @@ ${itemsXml}
 }
 
 async function fetchJson(url) {
-  const resp = await fetch(url, {
-    headers: {
-      apikey: SUPABASE_ANON_KEY,
-      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-    },
-  });
-  if (!resp.ok) throw new Error(`${resp.status} ${resp.statusText}: ${url}`);
-  return resp.json();
+  const attempts = 3;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      const resp = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      });
+
+      if (!resp.ok) {
+        const body = await resp.text().catch(() => "");
+        throw new Error(`${resp.status} ${resp.statusText}: ${url}${body ? `\n${body}` : ""}`);
+      }
+
+      const data = await resp.json();
+      return Array.isArray(data) ? data : EMPTY_ITEMS;
+    } catch (err) {
+      if (i === attempts) throw err;
+      console.warn(`   RSS fetch failed (attempt ${i}/${attempts}), retrying...`, err.message);
+      await new Promise((resolve) => setTimeout(resolve, i * 1000));
+    }
+  }
+
+  return EMPTY_ITEMS;
+}
+
+function writeEmptyFeed(filename, title, description) {
+  writeFileSync(
+    filename,
+    buildRss(title, description, SITE, EMPTY_ITEMS),
+    "utf-8"
+  );
 }
 
 async function main() {
   console.log("📡 Generating RSS feeds...");
 
-  // 1. feed.xml — latest 30 new skills
+  // 1. feed.xml — latest new skills from a bounded, index-friendly candidate set.
   const newSkills = await fetchJson(
-    `${SUPABASE_URL}/rest/v1/skills?select=repo_full_name,repo_name,author_name,description,stars,category,first_seen&order=first_seen.desc&limit=30&stars=gte.20`
+    `${SUPABASE_URL}/rest/v1/skills?select=repo_full_name,repo_name,author_name,description,stars,category,first_seen&stars=gte.20&order=stars.desc&limit=200`
+  ).then((skills) =>
+    skills
+      .filter((s) => s.first_seen)
+      .sort((a, b) => new Date(b.first_seen) - new Date(a.first_seen))
+      .slice(0, 30)
   );
 
   const newItems = newSkills.map((s) => ({
@@ -114,6 +146,15 @@ async function main() {
 }
 
 main().catch((e) => {
-  console.error("RSS generation failed:", e);
-  process.exit(1);
+  console.warn("RSS generation failed; writing empty feeds so Pages deployment can continue.", e);
+  writeEmptyFeed(
+    "dist/feed.xml",
+    "Agent Skills Hub — New Skills",
+    "Latest AI agent tools, MCP servers, and Claude skills indexed on Agent Skills Hub"
+  );
+  writeEmptyFeed(
+    "dist/feed-trending.xml",
+    "Agent Skills Hub — Weekly Trending",
+    "Top 20 fastest-growing AI agent tools by star velocity, updated weekly"
+  );
 });
