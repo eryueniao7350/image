@@ -105,7 +105,7 @@ export function shouldIndex(skill) {
 export async function fetchAllSkills() {
   const skills = [];
   let offset = 0;
-  const limit = 1000;
+  const limit = 500;
   const fields = [
     "id", "repo_full_name", "repo_name", "author_name", "author_avatar_url",
     "stars", "forks", "description", "category", "language", "score", "license",
@@ -115,14 +115,8 @@ export async function fetchAllSkills() {
   ].join(",");
 
   while (true) {
-    const url = `${SUPABASE_URL}/rest/v1/skills?select=${fields}&order=stars.desc&offset=${offset}&limit=${limit}`;
-    const res = await fetch(url, {
-      headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-      },
-    });
-    const data = await res.json();
+    const url = `${SUPABASE_URL}/rest/v1/skills?select=${fields}&stars=gte.20&order=stars.desc&offset=${offset}&limit=${limit}`;
+    const data = await fetchSkillsPage(url, offset);
     if (!data.length) break;
     for (const row of data) {
       if (row.readme_content) {
@@ -134,4 +128,36 @@ export async function fetchAllSkills() {
     if (data.length < limit) break;
   }
   return skills;
+}
+
+async function fetchSkillsPage(url, offset) {
+  const attempts = 3;
+  for (let i = 1; i <= attempts; i++) {
+    try {
+      const res = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      });
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        throw new Error(`Supabase skills page ${offset} failed: ${res.status} ${res.statusText}${body ? `\n${body}` : ""}`);
+      }
+
+      const data = await res.json();
+      if (!Array.isArray(data)) {
+        throw new Error(`Supabase skills page ${offset} returned non-array data: ${JSON.stringify(data).slice(0, 500)}`);
+      }
+
+      return data;
+    } catch (err) {
+      if (i === attempts) throw err;
+      console.warn(`Fetch skills page ${offset} failed (attempt ${i}/${attempts}), retrying...`, err.message);
+      await new Promise((resolve) => setTimeout(resolve, i * 1000));
+    }
+  }
+
+  return [];
 }
