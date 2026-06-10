@@ -2,7 +2,7 @@ name: Deploy Frontend to GitHub Pages
 
 on:
   push:
-    branches: [main]
+    branches: [main, codex/ai-image-mvp]
   workflow_run:
     workflows: ["Sync Skills Data"]
     types: [completed]
