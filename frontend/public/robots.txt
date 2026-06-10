@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://agentskillshub.top/sitemap.xml
+Sitemap: https://image-chi-kohl.vercel.app/sitemap.xml

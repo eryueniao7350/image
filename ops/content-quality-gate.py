@@ -91,7 +91,7 @@ DAILY_REPORT_SECTIONS = [
     ("title", r"(?:^#\s|日报|Daily|Top\s*\d+|精选|今[日天])", "Title/heading"),
     ("intro", r"(?:^.{20,})", "Introduction paragraph (20+ chars)"),
     ("tool_list", r"(?:\d+[\.\)、]|\*\*\d+)", "Numbered tool list"),
-    ("links", r"(?:https?://|github\.com/|agentskillshub)", "Links/URLs"),
+    ("links", r"(?:https?://|github\.com/|image-chi-kohl)", "Links/URLs"),
     ("cta", r"(?:关注|订阅|Explore|Subscribe|Star|收藏|Check|查看|访问)", "Call-to-action"),
 ]
 
@@ -101,7 +101,7 @@ WEEKLY_REPORT_SECTIONS = [
     ("intro", r"(?:^.{20,})", "Introduction paragraph"),
     ("new_skills", r"(?:New|新[增上]|本周|This Week)", "New skills section"),
     ("trending", r"(?:Trending|趋势|热门|增速|velocity|Still Trending)", "Trending section"),
-    ("links", r"(?:https?://|github\.com/|agentskillshub)", "Links/URLs"),
+    ("links", r"(?:https?://|github\.com/|image-chi-kohl)", "Links/URLs"),
     ("cta", r"(?:关注|订阅|Explore|Subscribe|Star|收藏)", "Call-to-action"),
 ]
 
@@ -298,7 +298,7 @@ def score_engagement(text: str) -> DimensionResult:
     # Call-to-action
     cta_patterns = [
         r"(?:关注|订阅|收藏|点赞|转发|Star|subscribe|follow|check.?out|explore|try)",
-        r"(?:agentskillshub\.top|github\.com)",
+        r"(?:image-chi-kohl\.top|github\.com)",
         r"(?:链接|link|URL|详情|了解更多|read more|learn more)",
     ]
     cta_found = 0

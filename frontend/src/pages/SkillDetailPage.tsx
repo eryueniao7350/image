@@ -106,7 +106,7 @@ export function SkillDetailPage() {
         <meta property="og:title" content={`${detail.repo_name} | Agent Skills Hub`} />
         <meta property="og:description" content={ogDescription} />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={`https://agentskillshub.top/skill/${detail.repo_full_name}/`} />
+        <meta property="og:url" content={`https://image-chi-kohl.vercel.app/skill/${detail.repo_full_name}/`} />
         <meta property="og:image" content={detail.author_avatar_url} />
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary" />
@@ -114,7 +114,7 @@ export function SkillDetailPage() {
         <meta name="twitter:description" content={ogDescription} />
         <meta name="twitter:image" content={detail.author_avatar_url} />
         {/* Canonical URL */}
-        <link rel="canonical" href={`https://agentskillshub.top/skill/${detail.repo_full_name}/`} />
+        <link rel="canonical" href={`https://image-chi-kohl.vercel.app/skill/${detail.repo_full_name}/`} />
       </Helmet>
 
       {/* Shared Navigation Bar */}

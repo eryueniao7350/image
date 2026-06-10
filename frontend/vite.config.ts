@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  // Custom domain (agentskillshub.top) → "/"
+  // Custom domain (image-chi-kohl.vercel.app) → "/"
   // Without custom domain on GitHub Pages → "/agent-skills-hub/"
   base: "/",
   plugins: [react(), tailwindcss()],

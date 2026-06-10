@@ -3,7 +3,7 @@
 # Generates a list of top repos to add Agent Skills Hub badge
 # Usage: ./ops/badge-outreach.sh [--dry-run] [--limit N]
 #
-# Strategy: Start with repos that already reference agentskillshub.top
+# Strategy: Start with repos that already reference image-chi-kohl.vercel.app
 # or have "agent skill" in their description, then expand to top starred repos.
 #
 # IMPORTANT: Do NOT auto-submit PRs. Review each repo manually.
@@ -13,9 +13,9 @@ set -e
 
 LIMIT=${2:-20}
 DRY_RUN=${1:-"--dry-run"}
-BADGE_BASE="https://agentskillshub.top/badge"
-SITE_BASE="https://agentskillshub.top/skill"
-SUPABASE_URL="https://vknzzecmzsfmohglpfgm.supabase.co"
+BADGE_BASE="https://image-chi-kohl.vercel.app/badge"
+SITE_BASE="https://image-chi-kohl.vercel.app/skill"
+SUPABASE_URL="https://cfsrpjiemaubjjigmhgm.supabase.co"
 SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnp6ZWNtenNmbW9oZ2xwZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDQ3MzIsImV4cCI6MjA4ODM4MDczMn0.zFAGZH-lDcL-GwyMkR-9sSV8pJToVzomsJ_fuXZIoDo"
 
 echo "🏷️  Badge Outreach — Generating target list"
@@ -59,12 +59,12 @@ echo ""
 cat << 'TEMPLATE'
 Hi! 👋
 
-[Agent Skills Hub](https://agentskillshub.top) is an open-source directory of 42,000+ AI agent tools, MCP servers, and Claude Code skills.
+[Agent Skills Hub](https://image-chi-kohl.vercel.app) is an open-source directory of 42,000+ AI agent tools, MCP servers, and Claude Code skills.
 
 Your project is listed and ranked on our platform. This PR adds a badge to your README that links to your project's page on Agent Skills Hub, where users can discover your tool alongside related alternatives.
 
 **Badge preview:**
-![Agent Skills Hub](https://agentskillshub.top/badge/{owner}/{repo}.svg)
+![Agent Skills Hub](https://image-chi-kohl.vercel.app/badge/{owner}/{repo}.svg)
 
 Feel free to customize the badge placement. No obligation to merge — just thought it might help with discoverability!
 TEMPLATE

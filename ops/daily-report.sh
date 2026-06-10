@@ -26,7 +26,7 @@ TWO_DAYS_AGO=$(date -v-2d +%Y-%m-%d 2>/dev/null || date -d "2 days ago" +%Y-%m-%
 OUTPUT_DIR="$PROJECT_ROOT/ops/daily-data/$TODAY"
 mkdir -p "$OUTPUT_DIR"
 
-SUPABASE_URL="https://vknzzecmzsfmohglpfgm.supabase.co"
+SUPABASE_URL="https://cfsrpjiemaubjjigmhgm.supabase.co"
 SUPABASE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnp6ZWNtenNmbW9oZ2xwZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDQ3MzIsImV4cCI6MjA4ODM4MDczMn0.zFAGZH-lDcL-GwyMkR-9sSV8pJToVzomsJ_fuXZIoDo"
 
 echo "📅 日报素材采集 — $TODAY"

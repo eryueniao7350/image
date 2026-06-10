@@ -41,6 +41,7 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          SITE_URL: https://image-chi-kohl.vercel.app
         run: |
           npx tsc -b
           npx vite build
@@ -50,11 +51,6 @@ jobs:
           node scripts/generate-badges.mjs
           node scripts/generate-rss.mjs
           node scripts/generate-sitemap.mjs
-
-      - name: Create IndexNow key verification file
-        run: |
-          INDEXNOW_KEY="a52f1d0890354e5b84d0e4e1ba17bd84"
-          echo "$INDEXNOW_KEY" > dist/${INDEXNOW_KEY}.txt
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -71,50 +67,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-  notify-search-engines:
-    runs-on: ubuntu-latest
-    needs: deploy
-    steps:
-      - name: Fetch live sitemaps
-        run: |
-          mkdir -p sitemaps
-          for f in sitemap-static sitemap-categories sitemap-top sitemap-mid sitemap-rest sitemap-scenarios sitemap-comparisons; do
-            curl -sL "https://agentskillshub.top/${f}.xml" -o "sitemaps/${f}.xml" 2>/dev/null || true
-          done
-
-      - name: Submit to IndexNow (Bing + Yandex)
-        run: |
-          INDEXNOW_KEY="a52f1d0890354e5b84d0e4e1ba17bd84"
-
-          URLS=$(grep -oP '(?<=<loc>)[^<]+' sitemaps/sitemap*.xml 2>/dev/null || true)
-
-          if [ -z "$URLS" ]; then
-            echo "No sitemap URLs found, skipping IndexNow"
-            exit 0
-          fi
-
-          URL_COUNT=$(echo "$URLS" | wc -l | tr -d ' ')
-          echo "Found $URL_COUNT URLs, submitting in batches of 2000..."
-
-          BATCH=0
-          echo "$URLS" | while mapfile -t -n 2000 CHUNK && [ ${#CHUNK[@]} -gt 0 ]; do
-            BATCH=$((BATCH+1))
-            BATCH_COUNT=${#CHUNK[@]}
-            echo "Batch $BATCH: $BATCH_COUNT URLs"
-
-            URL_JSON=$(printf '%s\n' "${CHUNK[@]}" | jq -R -s 'split("\n") | map(select(length > 0))')
-            cat > /tmp/indexnow_payload.json <<EOJSON
-          {"host":"agentskillshub.top","key":"${INDEXNOW_KEY}","keyLocation":"https://agentskillshub.top/${INDEXNOW_KEY}.txt","urlList":${URL_JSON}}
-          EOJSON
-
-            YANDEX_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "https://yandex.com/indexnow" \
-              -H "Content-Type: application/json; charset=utf-8" -d @/tmp/indexnow_payload.json)
-            echo "  Yandex: HTTP $YANDEX_CODE"
-
-            BING_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST "https://www.bing.com/indexnow" \
-              -H "Content-Type: application/json; charset=utf-8" -d @/tmp/indexnow_payload.json)
-            echo "  Bing: HTTP $BING_CODE"
-          done
-
-          echo "IndexNow submission complete."

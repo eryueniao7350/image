@@ -17,9 +17,9 @@ try:
 except ImportError:
     HAS_DB = False
 
-SUPABASE_URL = "https://vknzzecmzsfmohglpfgm.supabase.co"
+SUPABASE_URL = "https://cfsrpjiemaubjjigmhgm.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnp6ZWNtenNmbW9oZ2xwZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDQ3MzIsImV4cCI6MjA4ODM4MDczMn0.zFAGZH-lDcL-GwyMkR-9sSV8pJToVzomsJ_fuXZIoDo"
-SITE_URL = os.getenv("SITE_URL", "https://agentskillshub.top")
+SITE_URL = os.getenv("SITE_URL", "https://image-chi-kohl.vercel.app")
 
 
 def parse_datetime(value):
@@ -117,7 +117,7 @@ def generate_report(skills: list, today: str) -> str:
     lines = [
         f"## 🔥 今日新鲜 Skills 精选 Top 10（{today}）",
         "",
-        "由 agentskillshub.top 整理！",
+        "由 image-chi-kohl.vercel.app 整理！",
         "",
     ]
 

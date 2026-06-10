@@ -109,7 +109,7 @@ export function SiteHeader({ showTabs, tab, onTabChange, breadcrumb }: Props) {
             </span>
             {/* GitHub repo link */}
             <a
-              href="https://github.com/ZhuYansen/agent-skills-hub"
+              href="https://github.com/eryueniao7350/image"
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-300"

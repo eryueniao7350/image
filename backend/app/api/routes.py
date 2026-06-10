@@ -887,7 +887,7 @@ def rss_feed(
         .all()
     )
 
-    site_url = settings.site_url or "https://agentskillshub.top"
+    site_url = settings.site_url or "https://image-chi-kohl.vercel.app"
 
     def _rfc822(dt: Optional[datetime]) -> str:
         if not dt:
@@ -948,7 +948,7 @@ def rss_feed(
 @router.get("/sitemap.xml")
 def sitemap(db: Session = Depends(get_db)) -> Response:
     """Auto-generated sitemap for SEO. Includes all skill detail pages."""
-    site_url = settings.site_url or "https://agentskillshub.top"
+    site_url = settings.site_url or "https://image-chi-kohl.vercel.app"
 
     skills = (
         db.query(Skill.repo_full_name, Skill.last_synced, Skill.score)

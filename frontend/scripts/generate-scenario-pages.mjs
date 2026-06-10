@@ -12,13 +12,14 @@ import { readFileSync, mkdirSync, writeFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import {
-  SITE, CATEGORY_LABELS,
+  SUPABASE_URL, SUPABASE_ANON_KEY, SITE, CATEGORY_LABELS,
   esc, starsK, stripMarkdown, parseJsonArray,
   extractAssetTags, shouldIndex, fetchAllSkills,
 } from "./shared-utils.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = "dist";
+const SITE_HOST = new URL(SITE).hostname;
 
 /* ── Skill matching ──────────────────────────────── */
 
@@ -134,7 +135,7 @@ function buildStaticHeader() {
       <nav class="bp-nav-links">
         <a href="/" class="bp-nav-link">Home</a>
         <a href="/best/" class="bp-nav-link bp-nav-link--active">Best Tools</a>
-        <a href="https://github.com/ZhuYansen/agent-skills-hub" target="_blank" rel="noopener noreferrer" class="bp-nav-link" style="display:flex;align-items:center;gap:4px">
+        <a href="https://github.com/eryueniao7350/image" target="_blank" rel="noopener noreferrer" class="bp-nav-link" style="display:flex;align-items:center;gap:4px">
           <svg style="width:16px;height:16px" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
           GitHub
         </a>
@@ -182,7 +183,7 @@ function buildNewsletterCta() {
   return `<div class="bp-newsletter">
     <h3 data-zh="订阅每周 AI 工具精选" data-en="Get Weekly AI Tool Picks">Get Weekly AI Tool Picks</h3>
     <p data-zh="每周一发送 Top 20 增速最快的 AI 工具，免费订阅。" data-en="Top 20 fastest-growing AI tools delivered every Monday. Free.">Top 20 fastest-growing AI tools delivered every Monday. Free.</p>
-    <form id="nl-form" onsubmit="return (function(e){e.preventDefault();var em=document.getElementById('nl-email').value;if(!em)return false;var btn=document.getElementById('nl-btn');btn.textContent='Subscribing...';btn.disabled=true;fetch('https://vknzzecmzsfmohglpfgm.supabase.co/rest/v1/subscribers',{method:'POST',headers:{'Content-Type':'application/json','apikey':'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnp6ZWNtenNmbW9oZ2xwZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDQ3MzIsImV4cCI6MjA4ODM4MDczMn0.zFAGZH-lDcL-GwyMkR-9sSV8pJToVzomsJ_fuXZIoDo','Authorization':'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnp6ZWNtenNmbW9oZ2xwZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDQ3MzIsImV4cCI6MjA4ODM4MDczMn0.zFAGZH-lDcL-GwyMkR-9sSV8pJToVzomsJ_fuXZIoDo','Prefer':'return=minimal'},body:JSON.stringify({email:em})}).then(function(r){if(r.ok||r.status===409){btn.textContent='Subscribed!';btn.style.background='#059669'}else{btn.textContent='Try again';btn.disabled=false}}).catch(function(){btn.textContent='Try again';btn.disabled=false});return false})(event)" class="bp-newsletter-form" style="max-width:400px;margin:0 auto">
+    <form id="nl-form" onsubmit="return (function(e){e.preventDefault();var em=document.getElementById('nl-email').value;if(!em)return false;var btn=document.getElementById('nl-btn');btn.textContent='Subscribing...';btn.disabled=true;fetch('${SUPABASE_URL}/rest/v1/subscribers',{method:'POST',headers:{'Content-Type':'application/json','apikey':'${SUPABASE_ANON_KEY}','Authorization':'Bearer ${SUPABASE_ANON_KEY}','Prefer':'return=minimal'},body:JSON.stringify({email:em})}).then(function(r){if(r.ok||r.status===409){btn.textContent='Subscribed!';btn.style.background='#059669'}else{btn.textContent='Try again';btn.disabled=false}}).catch(function(){btn.textContent='Try again';btn.disabled=false});return false})(event)" class="bp-newsletter-form" style="max-width:400px;margin:0 auto">
       <input id="nl-email" type="email" placeholder="your@email.com" required class="bp-newsletter-input" style="flex:1" />
       <button id="nl-btn" type="submit" class="bp-newsletter-btn cta-btn" data-zh="订阅" data-en="Subscribe">Subscribe</button>
     </form>
@@ -273,7 +274,7 @@ ${breadcrumbLd}
   </script>
   <link rel="stylesheet" href="/best-pages.css" />
   ${linkTags.filter(t => t.includes('stylesheet')).join("\n  ")}
-  <script defer data-domain="agentskillshub.top" src="https://plausible.io/js/script.js"></script>
+  <script defer data-domain="${SITE_HOST}" src="https://plausible.io/js/script.js"></script>
 </head>
 <body class="bp-body">
   ${buildStaticHeader()}
@@ -344,7 +345,7 @@ function buildScenarioHtml(scenario, skills, assetTags, allScenarios) {
     },
     {
       q: `How many ${scenarioLower} tools are available?`,
-      a: `Agent Skills Hub indexes ${skills.length} ${scenarioLower} tools, updated daily from GitHub. Browse the full list at agentskillshub.top.`,
+      a: `Agent Skills Hub indexes ${skills.length} ${scenarioLower} tools, updated daily from GitHub. Browse the full list at ${SITE_HOST}.`,
     },
     {
       q: `Are these ${scenarioLower} tools free to use?`,
@@ -463,7 +464,7 @@ ${faqLd}
   <!-- Static page: no SPA JavaScript, CSS only -->
   <link rel="stylesheet" href="/best-pages.css" />
   ${linkTags.filter(t => t.includes('stylesheet')).join("\n  ")}
-  <script defer data-domain="agentskillshub.top" src="https://plausible.io/js/script.js"></script>
+  <script defer data-domain="${SITE_HOST}" src="https://plausible.io/js/script.js"></script>
 </head>
 <body class="bp-body">
   ${buildStaticHeader()}
@@ -551,7 +552,7 @@ ${faqLd}
           <a href="/blog/" style="color:var(--bp-text-secondary);text-decoration:none">Blog</a>
           <a href="/privacy/" style="color:var(--bp-text-secondary);text-decoration:none">Privacy</a>
           <a href="/terms/" style="color:var(--bp-text-secondary);text-decoration:none">Terms</a>
-          <a href="https://github.com/ZhuYansen/agent-skills-hub" style="color:var(--bp-text-secondary);text-decoration:none">GitHub</a>
+          <a href="https://github.com/eryueniao7350/image" style="color:var(--bp-text-secondary);text-decoration:none">GitHub</a>
         </div>
         <p style="margin:0">&copy; ${year} Agent Skills Hub. Open-source project.</p>
       </footer>

@@ -2,7 +2,7 @@
 """
 SEO Competitor Gap Analysis for Agent Skills Hub
 
-Compares agentskillshub.top against competitors by:
+Compares image-chi-kohl.vercel.app against competitors by:
 1. Fetching competitor sitemaps to discover their URL/page structure
 2. Extracting keyword themes from competitor pages
 3. Cross-referencing with our Supabase data (categories, scenarios, skills)
@@ -35,7 +35,7 @@ from urllib.parse import urlparse, unquote
 # ─────────────────────────────────────────────
 # Config
 # ─────────────────────────────────────────────
-OUR_DOMAIN = "agentskillshub.top"
+OUR_DOMAIN = "image-chi-kohl.vercel.app"
 OUR_SITE = f"https://{OUR_DOMAIN}"
 
 COMPETITORS = {

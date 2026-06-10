@@ -2,7 +2,7 @@
 
 > Discover, evaluate, and compare 6,000+ open-source Agent Skills, MCP servers, and AI tools.
 
-🌐 **Live**: [agentskillshub.top](https://agentskillshub.top) · 📰 [Newsletter](https://agentskillshub.top/#newsletter) · 𝕏 [Follow](https://x.com/GoSailGlobal)
+🌐 **Live**: [image-chi-kohl.vercel.app](https://image-chi-kohl.vercel.app) · 📰 [Newsletter](https://image-chi-kohl.vercel.app/#newsletter) · 𝕏 [Follow](https://x.com/GoSailGlobal)
 
 ## Architecture
 

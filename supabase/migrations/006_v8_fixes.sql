@@ -469,7 +469,7 @@ AS $func$
 DECLARE
   verify_url TEXT;
   email_html TEXT;
-  site_url TEXT := 'https://agentskillshub.top';
+  site_url TEXT := 'https://image-chi-kohl.vercel.app';
   request_id BIGINT;
 BEGIN
   verify_url := site_url || '/verify-email?token=' || p_token;
@@ -498,7 +498,7 @@ BEGIN
   SELECT net.http_post(
     url := 'https://api.resend.com/emails'::text,
     body := jsonb_build_object(
-      'from', 'Agent Skills Hub <noreply@agentskillshub.top>',
+      'from', 'Agent Skills Hub <noreply@image-chi-kohl.vercel.app>',
       'to', jsonb_build_array(p_email),
       'subject', 'Confirm your Agent Skills Hub subscription',
       'html', email_html

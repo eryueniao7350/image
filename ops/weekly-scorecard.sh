@@ -168,7 +168,7 @@ fi
 # ── Traffic placeholder (Plausible / Analytics) ───────────────────────────────
 # If you have a Plausible API token, set PLAUSIBLE_TOKEN and PLAUSIBLE_SITE_ID
 PLAUSIBLE_TOKEN="${PLAUSIBLE_TOKEN:-}"
-PLAUSIBLE_SITE_ID="${PLAUSIBLE_SITE_ID:-agentskillshub.top}"
+PLAUSIBLE_SITE_ID="${PLAUSIBLE_SITE_ID:-image-chi-kohl.vercel.app}"
 WEEKLY_VISITORS="N/A"
 WEEKLY_PAGEVIEWS="N/A"
 

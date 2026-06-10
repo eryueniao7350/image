@@ -3,10 +3,10 @@
  * Used by: generate-skill-pages.mjs, generate-scenario-pages.mjs
  */
 
-export const SUPABASE_URL = "https://vknzzecmzsfmohglpfgm.supabase.co";
-export const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZrbnp6ZWNtenNmbW9oZ2xwZmdtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MDQ3MzIsImV4cCI6MjA4ODM4MDczMn0.zFAGZH-lDcL-GwyMkR-9sSV8pJToVzomsJ_fuXZIoDo";
-export const SITE = "https://agentskillshub.top";
+export const SUPABASE_URL =
+  process.env.VITE_SUPABASE_URL || "https://cfsrpjiemaubjjigmhgm.supabase.co";
+export const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || "";
+export const SITE = process.env.SITE_URL || "https://image-chi-kohl.vercel.app";
 
 export const CATEGORY_LABELS = {
   "mcp-server": "MCP Server",

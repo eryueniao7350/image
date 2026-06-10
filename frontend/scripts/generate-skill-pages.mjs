@@ -20,6 +20,8 @@ import {
   extractAssetTags, shouldIndex, fetchAllSkills,
 } from "./shared-utils.mjs";
 
+const SITE_HOST = new URL(SITE).hostname;
+
 async function fetchAllCompositions() {
   const comps = new Map();
   let offset = 0;
@@ -278,11 +280,11 @@ ${breadcrumbLd}
 ${faqLd}
   </script>
 
-  <link rel="preconnect" href="https://vknzzecmzsfmohglpfgm.supabase.co" />
+  <link rel="preconnect" href="${SUPABASE_URL}" />
   <link rel="dns-prefetch" href="https://avatars.githubusercontent.com" />
   ${scriptTags.join("\n  ")}
   ${linkTags.join("\n  ")}
-  <script defer data-domain="agentskillshub.top" src="https://plausible.io/js/script.js"></script>
+  <script defer data-domain="${SITE_HOST}" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
   <div id="root">
@@ -430,10 +432,10 @@ ${jsonLd}
 ${breadcrumbLd}
   </script>
 
-  <link rel="preconnect" href="https://vknzzecmzsfmohglpfgm.supabase.co" />
+  <link rel="preconnect" href="${SUPABASE_URL}" />
   ${scriptTags.join("\n  ")}
   ${linkTags.join("\n  ")}
-  <script defer data-domain="agentskillshub.top" src="https://plausible.io/js/script.js"></script>
+  <script defer data-domain="${SITE_HOST}" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
   <div id="root">

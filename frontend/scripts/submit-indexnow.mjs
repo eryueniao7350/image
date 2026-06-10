@@ -16,7 +16,7 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { randomUUID } from "crypto";
 
-const SITE = "https://agentskillshub.top";
+const SITE = "https://image-chi-kohl.vercel.app";
 const DIST = "dist";
 const INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow";
 
@@ -71,7 +71,7 @@ async function submitBatch(urls, key) {
   for (let i = 0; i < urls.length; i += BATCH_SIZE) {
     const batch = urls.slice(i, i + BATCH_SIZE);
     const payload = {
-      host: "agentskillshub.top",
+      host: "image-chi-kohl.vercel.app",
       key,
       keyLocation: `${SITE}/${key}.txt`,
       urlList: batch,

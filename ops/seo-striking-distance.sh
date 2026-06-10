@@ -2,7 +2,7 @@
 #
 # SEO Striking Distance Finder for Agent Skills Hub
 #
-# Finds keywords where agentskillshub.top ranks #4-20 (striking distance
+# Finds keywords where image-chi-kohl.vercel.app ranks #4-20 (striking distance
 # to page 1 top 3). Uses Google Search Console API if credentials exist,
 # otherwise falls back to estimating via our sitemap + target keyword list.
 #
@@ -16,7 +16,7 @@
 #   - Google Cloud project with Search Console API enabled
 #   - OAuth credentials (GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET)
 #   - Authenticated token (run gsc_auth.py first)
-#   - Set GSC_SITE_URL=https://agentskillshub.top/ or sc-domain:agentskillshub.top
+#   - Set GSC_SITE_URL=https://image-chi-kohl.vercel.app/ or sc-domain:image-chi-kohl.vercel.app
 #
 # Dependencies:
 #   pip install google-api-python-client google-auth (for GSC mode)
@@ -29,7 +29,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 OUTPUT_DIR="${SCRIPT_DIR}/output"
 mkdir -p "$OUTPUT_DIR"
 
-DOMAIN="agentskillshub.top"
+DOMAIN="image-chi-kohl.vercel.app"
 SITE_URL="https://${DOMAIN}"
 TODAY=$(date +%Y-%m-%d)
 OUTPUT_FILE="${OUTPUT_DIR}/striking-distance-${TODAY}.md"
@@ -74,7 +74,7 @@ run_gsc_mode() {
         echo "Then export:"
         echo "  export GOOGLE_CLIENT_ID='your-id'"
         echo "  export GOOGLE_CLIENT_SECRET='your-secret'"
-        echo "  export GSC_SITE_URL='https://agentskillshub.top/'"
+        echo "  export GSC_SITE_URL='https://image-chi-kohl.vercel.app/'"
         echo ""
         echo "And authenticate:"
         echo "  python ${SCRIPT_DIR}/../backend/gsc_auth.py"
@@ -101,7 +101,7 @@ except ImportError:
     print("Run: pip install google-api-python-client google-auth")
     sys.exit(1)
 
-SITE_URL = os.environ.get("GSC_SITE_URL", "https://agentskillshub.top/")
+SITE_URL = os.environ.get("GSC_SITE_URL", "https://image-chi-kohl.vercel.app/")
 TOKEN_FILE = os.environ.get("GSC_TOKEN_FILE", ".gsc-token.json")
 
 # Build credentials
@@ -184,7 +184,7 @@ if top3_opps:
     print("| Query | Page | Position | Impressions | Clicks | CTR |")
     print("|---|---|---|---|---|---|")
     for row in top3_opps[:20]:
-        page_short = row["page"].replace(f"https://{os.environ.get('DOMAIN', 'agentskillshub.top')}", "")
+        page_short = row["page"].replace(f"https://{os.environ.get('DOMAIN', 'image-chi-kohl.vercel.app')}", "")
         print(f"| {row['query']} | {page_short} | {row['position']} | {row['impressions']} | {row['clicks']} | {row['ctr']}% |")
     print()
     print("**Action:** These need minor optimization — better title tags, H1 match, internal links.")
@@ -200,7 +200,7 @@ if p1_bottom:
     print("| Query | Page | Position | Impressions | Clicks | CTR |")
     print("|---|---|---|---|---|---|")
     for row in p1_bottom[:20]:
-        page_short = row["page"].replace(f"https://{os.environ.get('DOMAIN', 'agentskillshub.top')}", "")
+        page_short = row["page"].replace(f"https://{os.environ.get('DOMAIN', 'image-chi-kohl.vercel.app')}", "")
         print(f"| {row['query']} | {page_short} | {row['position']} | {row['impressions']} | {row['clicks']} | {row['ctr']}% |")
     print()
     print("**Action:** Add more content depth, get 1-2 backlinks, improve internal linking.")
@@ -216,7 +216,7 @@ if p2:
     print("| Query | Page | Position | Impressions | Clicks | CTR |")
     print("|---|---|---|---|---|---|")
     for row in p2[:30]:
-        page_short = row["page"].replace(f"https://{os.environ.get('DOMAIN', 'agentskillshub.top')}", "")
+        page_short = row["page"].replace(f"https://{os.environ.get('DOMAIN', 'image-chi-kohl.vercel.app')}", "")
         print(f"| {row['query']} | {page_short} | {row['position']} | {row['impressions']} | {row['clicks']} | {row['ctr']}% |")
     print()
     print("**Action:** Consider content refresh, add FAQ section, build topical cluster.")

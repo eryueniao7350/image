@@ -117,7 +117,7 @@ export function SiteFooter() {
             <ul className="space-y-2">
               <li>
                 <a
-                  href="https://github.com/ZhuYansen/agent-skills-hub"
+                  href="https://github.com/eryueniao7350/image"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-1.5"

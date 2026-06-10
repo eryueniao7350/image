@@ -151,7 +151,7 @@ def _new_skills_rows_html(new_skills: list, max_items: int = 20) -> str:
         star_gain = skill.get("star_gain", 0)
         url = skill.get("repo_url", "#")
         category = skill.get("category", "")
-        site_url = settings.site_url or "https://agentskillshub.top"
+        site_url = settings.site_url or "https://image-chi-kohl.vercel.app"
         full_name = skill.get("repo_full_name", "")
         skill_page_url = f"{site_url}/skill/{full_name}/"
 
@@ -302,7 +302,7 @@ def _newsletter_email_html(
     unsubscribe_url: str = "",
 ) -> str:
     """Generate a weekly newsletter HTML email with New This Week + Top Trending."""
-    site_url = settings.site_url or "https://agentskillshub.top"
+    site_url = settings.site_url or "https://image-chi-kohl.vercel.app"
 
     inner = _header_html(
         "&#127381; New This Week",

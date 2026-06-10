@@ -1,7 +1,7 @@
 /**
  * Generate static SVG badges for all skills.
  * Output: dist/badge/{owner}/{repo}.svg
- * Usage in README: [![Listed on Agent Skills Hub](https://agentskillshub.top/badge/{owner}/{repo}.svg)](https://agentskillshub.top/skill/{owner}/{repo}/)
+ * Usage in README: [![Listed on Agent Skills Hub](https://image-chi-kohl.vercel.app/badge/{owner}/{repo}.svg)](https://image-chi-kohl.vercel.app/skill/{owner}/{repo}/)
  */
 
 import { mkdirSync, writeFileSync } from "fs";

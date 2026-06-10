@@ -12,8 +12,8 @@ class Settings(BaseSettings):
         "http://127.0.0.1:5173,"
         "http://localhost:3000,"
         "http://127.0.0.1:3000,"
-        "https://agentskillshub.top,"
-        "https://www.agentskillshub.top"
+        "https://image-chi-kohl.vercel.app,"
+        "https://www.image-chi-kohl.vercel.app"
     )
     admin_token: str = ""
 
@@ -31,8 +31,8 @@ class Settings(BaseSettings):
 
     # Resend email integration (recommended — free 3000 emails/month)
     resend_api_key: str = ""  # e.g. re_xxxxxxxx
-    email_from: str = "Agent Skills Hub <noreply@agentskillshub.top>"
-    site_url: str = "https://agentskillshub.top"
+    email_from: str = "Agent Skills Hub <noreply@image-chi-kohl.vercel.app>"
+    site_url: str = "https://image-chi-kohl.vercel.app"
 
     # Feishu / Lark bot webhook (optional)
     feishu_webhook_url: str = ""
