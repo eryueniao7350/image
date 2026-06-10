@@ -496,6 +496,9 @@ async function main() {
   console.log("Fetching skills from Supabase...");
   const skills = await fetchAllSkills();
   console.log(`Fetched ${skills.length} skills`);
+  if (skills.length === 0) {
+    throw new Error("No skills fetched from Supabase; aborting static page generation to avoid deploying empty pages.");
+  }
 
   console.log("Fetching compositions...");
   const compositions = await fetchAllCompositions();
