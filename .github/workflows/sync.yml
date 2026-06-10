@@ -5,6 +5,10 @@ on:
     - cron: "0 */8 * * *" # Every 8 hours
   workflow_dispatch: # Manual trigger
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -25,6 +29,24 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Check required secrets
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          missing=0
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::Missing required repository secret: GH_TOKEN"
+            missing=1
+          fi
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::Missing required repository secret: SUPABASE_DB_URL"
+            missing=1
+          fi
+          if [ "$missing" -ne 0 ]; then
+            exit 1
+          fi
 
       - name: Run sync
         env:
