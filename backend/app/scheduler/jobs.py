@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import os
 import time
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
@@ -323,6 +324,9 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
     try:
         all_repos: dict[str, dict] = {}
         owner_cache: dict[str, int] = {}
+        fast_sync = os.environ.get("SYNC_FAST", "").lower() in {"1", "true", "yes"}
+        if fast_sync:
+            logger.info("Fast sync enabled: limiting queries, pages, README fetches, and enrichment")
 
         # ── Incremental sync: determine pushed:> filter ──
         pushed_filter = ""
@@ -338,7 +342,10 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
         # ── Load search queries with priority tiers ──
         is_full_sync = not pushed_filter
         is_weekly = datetime.now(timezone.utc).weekday() == 6  # Sunday
-        if is_full_sync or is_weekly:
+        if fast_sync:
+            all_queries = list(CORE_QUERIES) + list(OPENCLAW_QUERIES)
+            logger.info("Running FAST query set (%d queries)", len(all_queries))
+        elif is_full_sync or is_weekly:
             all_queries = list(SEARCH_QUERIES)
             logger.info("Running FULL query set (%d queries): %s",
                         len(all_queries), "full sync" if is_full_sync else "weekly")
@@ -359,6 +366,8 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
 
         # ── Load DB-managed extra repos ──
         extra_repos_list = list(EXTRA_REPOS)
+        if fast_sync:
+            extra_repos_list = extra_repos_list[:20]
         try:
             from app.models.admin import ExtraRepo as ERModel
             db_extras = db.query(ERModel).filter(ERModel.is_active == True).all()  # noqa: E712
@@ -372,6 +381,8 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
 
         # ── Load DB-managed masters ──
         masters_list = list(MASTERS_USERS)
+        if fast_sync:
+            masters_list = []
         try:
             from app.models.admin import SkillMaster as SMModel
             db_masters = db.query(SMModel).filter(SMModel.is_active == True).all()  # noqa: E712
@@ -395,10 +406,11 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
             # Phase 1: Search GitHub for repos
             # ═══════════════════════════════════════════════════════
             search_start = time.time()
+            max_search_pages = 1 if fast_sync else 3
             for i, query in enumerate(all_queries):
                 effective_query = query + pushed_filter if pushed_filter else query
                 try:
-                    for page in range(1, 4):  # up to 3 pages per query
+                    for page in range(1, max_search_pages + 1):
                         data = await _github_request(
                             client,
                             "https://api.github.com/search/repositories",
@@ -467,6 +479,14 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
                     logger.error("Extra repo fetch failed [%s]: %s", full_name, exc)
 
             logger.info("Phase 3 complete: %d unique repos total", len(all_repos))
+            if fast_sync and len(all_repos) > 1000:
+                top_repos = sorted(
+                    all_repos.values(),
+                    key=lambda repo: repo.get("stargazers_count", repo.get("stars", 0)) or 0,
+                    reverse=True,
+                )[:1000]
+                all_repos = {repo.get("full_name", ""): repo for repo in top_repos if repo.get("full_name")}
+                logger.info("Fast sync cap applied: keeping top %d repos", len(all_repos))
 
             # ═══════════════════════════════════════════════════════
             # Phase 4: Enrich with owner followers
@@ -486,7 +506,7 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
 
             enriched_count = 0
             skipped_enrichment = 0
-            ENRICHMENT_BUDGET = 500  # Max API calls for enrichment per sync
+            ENRICHMENT_BUDGET = 50 if fast_sync else 500  # Max API calls for enrichment per sync
             for fn, repo in all_repos.items():
                 owner_login = repo.get("owner", {}).get("login", "")
                 if owner_login and owner_login not in owner_cache:
@@ -525,7 +545,7 @@ async def sync_all_skills(sync_log_id: Optional[int] = None, incremental: bool =
                 db.query(Skill.repo_full_name)
                 .filter(Skill.readme_content.is_(None))
                 .order_by(Skill.score.desc().nullslast())
-                .limit(300)
+                .limit(50 if fast_sync else 300)
                 .all()
             )
             readme_targets = {r.repo_full_name for r in null_readme_skills} & set(all_repos.keys())
