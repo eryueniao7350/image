@@ -32,14 +32,9 @@ jobs:
 
       - name: Check required secrets
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           missing=0
-          if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Missing required repository secret: GH_TOKEN"
-            missing=1
-          fi
           if [ -z "$SUPABASE_DB_URL" ]; then
             echo "::error::Missing required repository secret: SUPABASE_DB_URL"
             missing=1
@@ -50,7 +45,7 @@ jobs:
 
       - name: Run sync
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: python sync_runner.py
