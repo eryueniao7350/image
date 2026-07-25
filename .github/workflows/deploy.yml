@@ -19,6 +19,14 @@ concurrency:
 
 jobs:
   build:
+    # `workflow_run` fires on completion regardless of outcome, so a failed
+    # "Sync Skills Data" run would otherwise still trigger a deploy and ship
+    # whatever stale or partial data happens to be in the database.
+    # The event_name guard keeps push / workflow_dispatch runs working, since
+    # those carry no workflow_run payload and would evaluate to null.
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     defaults:
       run:
