@@ -2,10 +2,16 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
+// Derived from SITE_URL so the bundle, the generated static pages (which use
+// BASE from scripts/shared-utils.mjs) and the router all agree on one prefix.
+// GitHub Pages without a custom domain serves the project under /<repo>/;
+// a root deployment or local dev leaves this as "/".
+const base = process.env.SITE_URL
+  ? new URL(process.env.SITE_URL).pathname.replace(/\/*$/, "/")
+  : "/";
+
 export default defineConfig({
-  // Custom domain (image-chi-kohl.vercel.app) → "/"
-  // Without custom domain on GitHub Pages → "/agent-skills-hub/"
-  base: "/",
+  base,
   plugins: [react(), tailwindcss()],
   build: {
     rollupOptions: {

@@ -8,6 +8,19 @@ export const SUPABASE_URL =
 export const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || "";
 export const SITE = process.env.SITE_URL || "https://image-chi-kohl.vercel.app";
 
+/**
+ * Path prefix the site is served under, derived from SITE.
+ *
+ * GitHub Pages without a custom domain serves the project at /<repo>/, so every
+ * root-absolute link ("/skill/...") in the generated HTML would 404. Prefixing
+ * them with BASE keeps the same markup correct on both a subpath deployment and
+ * a root deployment, where BASE is the empty string.
+ *
+ *   https://user.github.io/image  -> "/image"
+ *   https://example.com           -> ""
+ */
+export const BASE = new URL(SITE).pathname.replace(/\/+$/, "");
+
 export const CATEGORY_LABELS = {
   "mcp-server": "MCP Server",
   "claude-skill": "Claude Skill",

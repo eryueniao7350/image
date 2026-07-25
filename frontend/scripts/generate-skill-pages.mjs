@@ -15,7 +15,7 @@
 import { readFileSync, mkdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import {
-  SUPABASE_URL, SUPABASE_ANON_KEY, SITE, CATEGORY_LABELS,
+  SUPABASE_URL, SUPABASE_ANON_KEY, SITE, BASE, CATEGORY_LABELS,
   esc, starsK, formatDate, stripMarkdown, truncate, parseJsonArray,
   extractAssetTags, shouldIndex, fetchAllSkills,
 } from "./shared-utils.mjs";
@@ -174,7 +174,7 @@ function buildSkillHtml(skill, assetTags, compositions, skillById, categoryIndex
     `<tr><td>Stars</td><td>${stars.toLocaleString()}</td></tr>`,
     `<tr><td>Forks</td><td>${(forks || 0).toLocaleString()}</td></tr>`,
     language ? `<tr><td>Language</td><td>${esc(language)}</td></tr>` : "",
-    `<tr><td>Category</td><td><a href="/category/${esc(category)}/">${esc(catLabel)}</a></td></tr>`,
+    `<tr><td>Category</td><td><a href="${BASE}/category/${esc(category)}/">${esc(catLabel)}</a></td></tr>`,
     license && license !== "NOASSERTION" ? `<tr><td>License</td><td>${esc(license)}</td></tr>` : "",
     quality_score ? `<tr><td>Quality Score</td><td>${quality_score}/100</td></tr>` : "",
     total_commits ? `<tr><td>Total Commits</td><td>${total_commits.toLocaleString()}</td></tr>` : "",
@@ -187,7 +187,7 @@ function buildSkillHtml(skill, assetTags, compositions, skillById, categoryIndex
 
   // Topics HTML
   const topicsHtml = topicsList.length > 0
-    ? `<div style="margin:12px 0;display:flex;flex-wrap:wrap;gap:6px">${topicsList.slice(0, 10).map((t) => `<a href="/?search=${encodeURIComponent(t)}" style="display:inline-block;padding:2px 10px;border-radius:12px;background:#f0f0ff;color:#4f46e5;font-size:13px;text-decoration:none">${esc(t)}</a>`).join("")}</div>`
+    ? `<div style="margin:12px 0;display:flex;flex-wrap:wrap;gap:6px">${topicsList.slice(0, 10).map((t) => `<a href="${BASE}/?search=${encodeURIComponent(t)}" style="display:inline-block;padding:2px 10px;border-radius:12px;background:#f0f0ff;color:#4f46e5;font-size:13px;text-decoration:none">${esc(t)}</a>`).join("")}</div>`
     : "";
 
   // Compatible skills HTML
@@ -196,7 +196,7 @@ function buildSkillHtml(skill, assetTags, compositions, skillById, categoryIndex
         <h2 style="font-size:18px;color:#1e293b;margin-bottom:8px">Compatible Skills</h2>
         <p style="color:#64748b;font-size:14px;margin-bottom:8px">These tools work well together with ${esc(repo_name)} for enhanced workflows:</p>
         <ul style="list-style:none;padding:0">${compLinks.map((c) => `
-          <li style="margin:6px 0"><a href="/skill/${esc(c.slug)}/" style="color:#4f46e5;text-decoration:none;font-weight:500">${esc(c.name)}</a> <span style="color:#94a3b8;font-size:13px">— ${esc(c.reason)} (${Math.round(c.score * 100)}%)</span></li>`).join("")}
+          <li style="margin:6px 0"><a href="${BASE}/skill/${esc(c.slug)}/" style="color:#4f46e5;text-decoration:none;font-weight:500">${esc(c.name)}</a> <span style="color:#94a3b8;font-size:13px">— ${esc(c.reason)} (${Math.round(c.score * 100)}%)</span></li>`).join("")}
         </ul>
       </section>`
     : "";
@@ -207,9 +207,9 @@ function buildSkillHtml(skill, assetTags, compositions, skillById, categoryIndex
         <h2 style="font-size:18px;color:#1e293b;margin-bottom:8px">More ${esc(catLabel)} Tools</h2>
         <p style="color:#64748b;font-size:14px;margin-bottom:8px">Explore other popular ${esc(catLabel.toLowerCase())} tools:</p>
         <ul style="list-style:none;padding:0">${sameCatSkills.map((s) => `
-          <li style="margin:4px 0"><a href="/skill/${esc(s.repo_full_name)}/" style="color:#4f46e5;text-decoration:none">${esc(s.repo_name)}</a> <span style="color:#94a3b8;font-size:13px">⭐ ${starsK(s.stars)}</span></li>`).join("")}
+          <li style="margin:4px 0"><a href="${BASE}/skill/${esc(s.repo_full_name)}/" style="color:#4f46e5;text-decoration:none">${esc(s.repo_name)}</a> <span style="color:#94a3b8;font-size:13px">⭐ ${starsK(s.stars)}</span></li>`).join("")}
         </ul>
-        <a href="/category/${esc(category)}/" style="color:#4f46e5;font-size:14px">View all ${esc(catLabel)} tools →</a>
+        <a href="${BASE}/category/${esc(category)}/" style="color:#4f46e5;font-size:14px">View all ${esc(catLabel)} tools →</a>
       </section>`
     : "";
 
@@ -218,7 +218,7 @@ function buildSkillHtml(skill, assetTags, compositions, skillById, categoryIndex
     ? `<section style="margin-top:20px">
         <h2 style="font-size:18px;color:#1e293b;margin-bottom:8px">Popular ${esc(language)} Agent Tools</h2>
         <ul style="list-style:none;padding:0">${sameLangSkills.map((s) => `
-          <li style="margin:4px 0"><a href="/skill/${esc(s.repo_full_name)}/" style="color:#4f46e5;text-decoration:none">${esc(s.repo_name)}</a> <span style="color:#94a3b8;font-size:13px">⭐ ${starsK(s.stars)} · ${esc(CATEGORY_LABELS[s.category] || "AI Tool")}</span></li>`).join("")}
+          <li style="margin:4px 0"><a href="${BASE}/skill/${esc(s.repo_full_name)}/" style="color:#4f46e5;text-decoration:none">${esc(s.repo_name)}</a> <span style="color:#94a3b8;font-size:13px">⭐ ${starsK(s.stars)} · ${esc(CATEGORY_LABELS[s.category] || "AI Tool")}</span></li>`).join("")}
         </ul>
       </section>`
     : "";
@@ -241,7 +241,7 @@ function buildSkillHtml(skill, assetTags, compositions, skillById, categoryIndex
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="${BASE}/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />${robotsMeta}
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(metaDesc)}" />
@@ -292,9 +292,9 @@ ${faqLd}
     <div style="max-width:800px;margin:40px auto;font-family:system-ui,-apple-system,sans-serif;padding:0 20px;color:#1e293b">
       <!-- Breadcrumb -->
       <nav style="font-size:13px;color:#64748b;margin-bottom:16px">
-        <a href="/" style="color:#4f46e5;text-decoration:none">Home</a>
+        <a href="${BASE}/" style="color:#4f46e5;text-decoration:none">Home</a>
         <span style="margin:0 6px">&gt;</span>
-        <a href="/category/${esc(category)}/" style="color:#4f46e5;text-decoration:none">${esc(catLabel)}</a>
+        <a href="${BASE}/category/${esc(category)}/" style="color:#4f46e5;text-decoration:none">${esc(catLabel)}</a>
         <span style="margin:0 6px">&gt;</span>
         <span>${esc(repo_name)}</span>
       </nav>
@@ -303,7 +303,7 @@ ${faqLd}
       <h1 style="font-size:28px;margin:0 0 8px">${esc(repo_name)}</h1>
       <p style="color:#64748b;margin:0 0 16px">
         by <a href="https://github.com/${esc(author_name)}" style="color:#4f46e5;text-decoration:none">${esc(author_name)}</a>
-        &middot; <a href="/category/${esc(category)}/" style="color:#4f46e5;text-decoration:none">${esc(catLabel)}</a>
+        &middot; <a href="${BASE}/category/${esc(category)}/" style="color:#4f46e5;text-decoration:none">${esc(catLabel)}</a>
         &middot; &#9733; ${starsK(stars)}
       </p>
 
@@ -339,7 +339,7 @@ ${faqLd}
       <!-- Links -->
       <div style="margin:24px 0;display:flex;gap:16px;flex-wrap:wrap">
         <a href="${esc(ghUrl)}" style="display:inline-block;padding:8px 20px;background:#1e293b;color:#fff;border-radius:8px;text-decoration:none;font-size:14px">View on GitHub &rarr;</a>
-        <a href="/category/${esc(category)}/" style="display:inline-block;padding:8px 20px;background:#f0f0ff;color:#4f46e5;border-radius:8px;text-decoration:none;font-size:14px">Browse ${esc(catLabel)} tools</a>
+        <a href="${BASE}/category/${esc(category)}/" style="display:inline-block;padding:8px 20px;background:#f0f0ff;color:#4f46e5;border-radius:8px;text-decoration:none;font-size:14px">Browse ${esc(catLabel)} tools</a>
       </div>
     </div>
   </div>
@@ -391,7 +391,7 @@ function buildCategoryHtml(catSlug, catSkills, assetTags, allCategories) {
     const desc = s.description ? esc(s.description.slice(0, 100)) : "";
     return `<tr>
         <td style="padding:8px 4px;font-size:14px;color:#64748b">${i + 1}</td>
-        <td style="padding:8px"><a href="/skill/${esc(s.repo_full_name)}/" style="color:#4f46e5;text-decoration:none;font-weight:500">${esc(s.repo_name)}</a><br><span style="color:#94a3b8;font-size:13px">${desc}</span></td>
+        <td style="padding:8px"><a href="${BASE}/skill/${esc(s.repo_full_name)}/" style="color:#4f46e5;text-decoration:none;font-weight:500">${esc(s.repo_name)}</a><br><span style="color:#94a3b8;font-size:13px">${desc}</span></td>
         <td style="padding:8px;text-align:right;white-space:nowrap;font-size:14px">&#9733; ${starsK(s.stars)}</td>
         <td style="padding:8px;color:#64748b;font-size:13px">${esc(s.language || "")}</td>
       </tr>`;
@@ -399,14 +399,14 @@ function buildCategoryHtml(catSlug, catSkills, assetTags, allCategories) {
 
   const otherCats = allCategories
     .filter((c) => c !== catSlug)
-    .map((c) => `<a href="/category/${esc(c)}/" style="display:inline-block;padding:4px 12px;margin:3px;border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:13px;text-decoration:none">${esc(CATEGORY_LABELS[c] || c)}</a>`)
+    .map((c) => `<a href="${BASE}/category/${esc(c)}/" style="display:inline-block;padding:4px 12px;margin:3px;border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;color:#475569;font-size:13px;text-decoration:none">${esc(CATEGORY_LABELS[c] || c)}</a>`)
     .join("");
 
   return `<!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="${BASE}/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(metaDesc)}" />
@@ -441,7 +441,7 @@ ${breadcrumbLd}
   <div id="root">
     <div style="max-width:900px;margin:40px auto;font-family:system-ui,-apple-system,sans-serif;padding:0 20px;color:#1e293b">
       <nav style="font-size:13px;color:#64748b;margin-bottom:16px">
-        <a href="/" style="color:#4f46e5;text-decoration:none">Home</a>
+        <a href="${BASE}/" style="color:#4f46e5;text-decoration:none">Home</a>
         <span style="margin:0 6px">&gt;</span>
         <span>${esc(catLabel)}</span>
       </nav>
@@ -475,7 +475,7 @@ ${breadcrumbLd}
       </table>
 
       <div style="margin:32px 0;text-align:center">
-        <a href="/" style="display:inline-block;padding:10px 24px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-size:14px">Explore All Skills on Agent Skills Hub</a>
+        <a href="${BASE}/" style="display:inline-block;padding:10px 24px;background:#4f46e5;color:#fff;border-radius:8px;text-decoration:none;font-size:14px">Explore All Skills on Agent Skills Hub</a>
       </div>
     </div>
   </div>

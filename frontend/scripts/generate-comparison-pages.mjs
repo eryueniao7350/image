@@ -12,7 +12,7 @@ import { readFileSync, mkdirSync, writeFileSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import {
-  SUPABASE_URL, SUPABASE_ANON_KEY, SITE, CATEGORY_LABELS,
+  SUPABASE_URL, SUPABASE_ANON_KEY, SITE, BASE, CATEGORY_LABELS,
   esc, starsK, formatDate, stripMarkdown, truncate,
   extractAssetTags,
 } from "./shared-utils.mjs";
@@ -53,14 +53,14 @@ async function fetchSkill(repoFullName) {
 function buildStaticHeader() {
   return `<header id="site-header" class="bp-header">
     <div class="bp-header-inner">
-      <a href="/" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+      <a href="${BASE}/" style="display:flex;align-items:center;gap:8px;text-decoration:none">
         <svg style="width:24px;height:24px;color:#3b82f6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2" stroke-width="1.5"/><circle cx="9" cy="16" r="1.5" fill="currentColor"/><circle cx="15" cy="16" r="1.5" fill="currentColor"/><path d="M12 2v4M8 7h8a2 2 0 012 2v2H6V9a2 2 0 012-2z" stroke-width="1.5" stroke-linecap="round"/></svg>
         <span class="bp-brand">Agent Skills Hub</span>
       </a>
       <nav class="bp-nav-links">
-        <a href="/" class="bp-nav-link">Home</a>
-        <a href="/compare/" class="bp-nav-link bp-nav-link--active">Compare</a>
-        <a href="/best/" class="bp-nav-link">Best Tools</a>
+        <a href="${BASE}/" class="bp-nav-link">Home</a>
+        <a href="${BASE}/compare/" class="bp-nav-link bp-nav-link--active">Compare</a>
+        <a href="${BASE}/best/" class="bp-nav-link">Best Tools</a>
         <a href="https://github.com/eryueniao7350/image" target="_blank" rel="noopener noreferrer" class="bp-nav-link" style="display:flex;align-items:center;gap:4px">
           <svg style="width:16px;height:16px" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
           GitHub
@@ -266,7 +266,7 @@ function buildComparisonHtml(pair, skillA, skillB, assetTags, allPairs) {
     const parts = p.slug.split("-vs-");
     const labelA = parts[0] ? friendlyName(parts[0]) : p.slug;
     const labelB = parts[1] ? friendlyName(parts[1]) : "";
-    return `<a href="/compare/${esc(p.slug)}/" class="bp-related-tag">${esc(labelA)} vs ${esc(labelB)}</a>`;
+    return `<a href="${BASE}/compare/${esc(p.slug)}/" class="bp-related-tag">${esc(labelA)} vs ${esc(labelB)}</a>`;
   }).join("\n        ");
 
   // FAQ HTML
@@ -279,7 +279,7 @@ function buildComparisonHtml(pair, skillA, skillB, assetTags, allPairs) {
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="${BASE}/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(metaDesc)}" />
@@ -309,7 +309,7 @@ ${breadcrumbLd}
 ${faqLd}
   </script>
 
-  <link rel="stylesheet" href="/best-pages.css" />
+  <link rel="stylesheet" href="${BASE}/best-pages.css" />
   ${linkTags.filter(t => t.includes('stylesheet')).join("\n  ")}
   <script defer data-domain="${SITE_HOST}" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -318,9 +318,9 @@ ${faqLd}
   <div class="bp-container">
     <!-- Breadcrumb -->
     <nav class="bp-breadcrumb">
-      <a href="/" data-zh="首页" data-en="Home">Home</a>
+      <a href="${BASE}/" data-zh="首页" data-en="Home">Home</a>
       <span style="margin:0 6px">&gt;</span>
-      <a href="/compare/" data-zh="对比" data-en="Compare">Compare</a>
+      <a href="${BASE}/compare/" data-zh="对比" data-en="Compare">Compare</a>
       <span style="margin:0 6px">&gt;</span>
       <span>${esc(nameA)} vs ${esc(nameB)}</span>
     </nav>
@@ -339,8 +339,8 @@ ${faqLd}
           <thead>
             <tr>
               <th data-zh="特性" data-en="Feature">Feature</th>
-              <th><a href="/skill/${esc(skillA.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameA)}</a></th>
-              <th><a href="/skill/${esc(skillB.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameB)}</a></th>
+              <th><a href="${BASE}/skill/${esc(skillA.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameA)}</a></th>
+              <th><a href="${BASE}/skill/${esc(skillB.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameB)}</a></th>
             </tr>
           </thead>
           <tbody>
@@ -356,8 +356,8 @@ ${faqLd}
             </tr>
             <tr>
               <td data-zh="分类" data-en="Category">Category</td>
-              <td><a href="/category/${esc(skillA.category)}/" style="color:var(--bp-link);text-decoration:none">${esc(catLabelA)}</a></td>
-              <td><a href="/category/${esc(skillB.category)}/" style="color:var(--bp-link);text-decoration:none">${esc(catLabelB)}</a></td>
+              <td><a href="${BASE}/category/${esc(skillA.category)}/" style="color:var(--bp-link);text-decoration:none">${esc(catLabelA)}</a></td>
+              <td><a href="${BASE}/category/${esc(skillB.category)}/" style="color:var(--bp-link);text-decoration:none">${esc(catLabelB)}</a></td>
             </tr>
             <tr>
               <td data-zh="语言" data-en="Language">Language</td>
@@ -408,21 +408,21 @@ ${faqLd}
     <section style="margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:20px">
       <div class="bp-card" style="padding:16px">
         <h3 style="margin:0 0 8px;font-size:16px">
-          <a href="/skill/${esc(skillA.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameA)}</a>
+          <a href="${BASE}/skill/${esc(skillA.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameA)}</a>
         </h3>
         <p style="color:var(--bp-text-secondary);font-size:14px;margin:0;line-height:1.6">${esc(excerptA)}</p>
         <div style="margin-top:12px;display:flex;gap:12px">
-          <a href="/skill/${esc(skillA.repo_full_name)}/" style="color:var(--bp-link);font-size:13px;text-decoration:none" data-zh="查看详情" data-en="View Details">View Details &rarr;</a>
+          <a href="${BASE}/skill/${esc(skillA.repo_full_name)}/" style="color:var(--bp-link);font-size:13px;text-decoration:none" data-zh="查看详情" data-en="View Details">View Details &rarr;</a>
           <a href="https://github.com/${esc(skillA.repo_full_name)}" style="color:var(--bp-text-secondary);font-size:13px;text-decoration:none">GitHub &rarr;</a>
         </div>
       </div>
       <div class="bp-card" style="padding:16px">
         <h3 style="margin:0 0 8px;font-size:16px">
-          <a href="/skill/${esc(skillB.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameB)}</a>
+          <a href="${BASE}/skill/${esc(skillB.repo_full_name)}/" style="color:var(--bp-link);text-decoration:none">${esc(nameB)}</a>
         </h3>
         <p style="color:var(--bp-text-secondary);font-size:14px;margin:0;line-height:1.6">${esc(excerptB)}</p>
         <div style="margin-top:12px;display:flex;gap:12px">
-          <a href="/skill/${esc(skillB.repo_full_name)}/" style="color:var(--bp-link);font-size:13px;text-decoration:none" data-zh="查看详情" data-en="View Details">View Details &rarr;</a>
+          <a href="${BASE}/skill/${esc(skillB.repo_full_name)}/" style="color:var(--bp-link);font-size:13px;text-decoration:none" data-zh="查看详情" data-en="View Details">View Details &rarr;</a>
           <a href="https://github.com/${esc(skillB.repo_full_name)}" style="color:var(--bp-text-secondary);font-size:13px;text-decoration:none">GitHub &rarr;</a>
         </div>
       </div>
@@ -458,16 +458,16 @@ ${faqLd}
 
     <!-- CTA -->
     <div style="margin:32px 0;text-align:center">
-      <a href="/" class="bp-newsletter-btn cta-btn" style="display:inline-block;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px" data-zh="探索全部 25,000+ 技能" data-en="Explore All 25,000+ Skills on Agent Skills Hub">Explore All 25,000+ Skills on Agent Skills Hub</a>
+      <a href="${BASE}/" class="bp-newsletter-btn cta-btn" style="display:inline-block;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px" data-zh="探索全部 25,000+ 技能" data-en="Explore All 25,000+ Skills on Agent Skills Hub">Explore All 25,000+ Skills on Agent Skills Hub</a>
     </div>
 
     <!-- Footer -->
     <footer style="margin-top:48px;padding:24px 0;border-top:1px solid var(--bp-border);text-align:center;font-size:13px;color:var(--bp-text-muted)">
       <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:8px">
-        <a href="/about/" style="color:var(--bp-text-secondary);text-decoration:none">About</a>
-        <a href="/blog/" style="color:var(--bp-text-secondary);text-decoration:none">Blog</a>
-        <a href="/privacy/" style="color:var(--bp-text-secondary);text-decoration:none">Privacy</a>
-        <a href="/terms/" style="color:var(--bp-text-secondary);text-decoration:none">Terms</a>
+        <a href="${BASE}/about/" style="color:var(--bp-text-secondary);text-decoration:none">About</a>
+        <a href="${BASE}/blog/" style="color:var(--bp-text-secondary);text-decoration:none">Blog</a>
+        <a href="${BASE}/privacy/" style="color:var(--bp-text-secondary);text-decoration:none">Privacy</a>
+        <a href="${BASE}/terms/" style="color:var(--bp-text-secondary);text-decoration:none">Terms</a>
         <a href="https://github.com/eryueniao7350/image" style="color:var(--bp-text-secondary);text-decoration:none">GitHub</a>
       </div>
       <p style="margin:0">&copy; ${year} Agent Skills Hub. Open-source project.</p>
@@ -500,7 +500,7 @@ function buildIndexHtml(pairs, fetchedPairs, assetTags) {
   const cardsHtml = fetchedPairs.map(({ pair, skillA, skillB }) => {
     const catLabelA = CATEGORY_LABELS[skillA.category] || "AI Tool";
     const catLabelB = CATEGORY_LABELS[skillB.category] || "AI Tool";
-    return `<a href="/compare/${esc(pair.slug)}/" class="bp-card" style="display:block;padding:16px;text-decoration:none;margin:12px 0">
+    return `<a href="${BASE}/compare/${esc(pair.slug)}/" class="bp-card" style="display:block;padding:16px;text-decoration:none;margin:12px 0">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
           <div style="flex:1;min-width:200px">
             <div class="bp-card-title" style="font-size:16px">${esc(skillA.repo_name)} <span style="color:var(--bp-text-muted);font-weight:400">vs</span> ${esc(skillB.repo_name)}</div>
@@ -518,7 +518,7 @@ function buildIndexHtml(pairs, fetchedPairs, assetTags) {
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="${BASE}/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(metaDesc)}" />
@@ -532,7 +532,7 @@ function buildIndexHtml(pairs, fetchedPairs, assetTags) {
   <script type="application/ld+json">
 ${breadcrumbLd}
   </script>
-  <link rel="stylesheet" href="/best-pages.css" />
+  <link rel="stylesheet" href="${BASE}/best-pages.css" />
   ${linkTags.filter(t => t.includes('stylesheet')).join("\n  ")}
   <script defer data-domain="${SITE_HOST}" src="https://plausible.io/js/script.js"></script>
 </head>
@@ -540,7 +540,7 @@ ${breadcrumbLd}
   ${buildStaticHeader()}
   <div class="bp-container">
     <nav class="bp-breadcrumb">
-      <a href="/" data-zh="首页" data-en="Home">Home</a>
+      <a href="${BASE}/" data-zh="首页" data-en="Home">Home</a>
       <span style="margin:0 6px">&gt;</span>
       <span data-zh="对比" data-en="Compare">Compare</span>
     </nav>
@@ -554,16 +554,16 @@ ${breadcrumbLd}
     </section>
     ${buildNewsletterCta()}
     <div style="margin:32px 0;text-align:center">
-      <a href="/" class="bp-newsletter-btn cta-btn" style="display:inline-block;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px" data-zh="探索全部 25,000+ 技能" data-en="Explore All 25,000+ Skills on Agent Skills Hub">Explore All 25,000+ Skills on Agent Skills Hub</a>
+      <a href="${BASE}/" class="bp-newsletter-btn cta-btn" style="display:inline-block;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px" data-zh="探索全部 25,000+ 技能" data-en="Explore All 25,000+ Skills on Agent Skills Hub">Explore All 25,000+ Skills on Agent Skills Hub</a>
     </div>
 
     <!-- Footer -->
     <footer style="margin-top:48px;padding:24px 0;border-top:1px solid var(--bp-border);text-align:center;font-size:13px;color:var(--bp-text-muted)">
       <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:8px">
-        <a href="/about/" style="color:var(--bp-text-secondary);text-decoration:none">About</a>
-        <a href="/blog/" style="color:var(--bp-text-secondary);text-decoration:none">Blog</a>
-        <a href="/privacy/" style="color:var(--bp-text-secondary);text-decoration:none">Privacy</a>
-        <a href="/terms/" style="color:var(--bp-text-secondary);text-decoration:none">Terms</a>
+        <a href="${BASE}/about/" style="color:var(--bp-text-secondary);text-decoration:none">About</a>
+        <a href="${BASE}/blog/" style="color:var(--bp-text-secondary);text-decoration:none">Blog</a>
+        <a href="${BASE}/privacy/" style="color:var(--bp-text-secondary);text-decoration:none">Privacy</a>
+        <a href="${BASE}/terms/" style="color:var(--bp-text-secondary);text-decoration:none">Terms</a>
         <a href="https://github.com/eryueniao7350/image" style="color:var(--bp-text-secondary);text-decoration:none">GitHub</a>
       </div>
       <p style="margin:0">&copy; ${year} Agent Skills Hub. Open-source project.</p>

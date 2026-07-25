@@ -51,10 +51,15 @@ jobs:
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          SITE_URL: https://image-chi-kohl.vercel.app
+          # Single source of truth for the deployed origin + path prefix:
+          # vite.config derives `base` from it, scripts/shared-utils.mjs derives
+          # BASE from it, and the generated pages use it for absolute URLs.
+          # GitHub Pages serves this project under /image/ (no custom domain).
+          SITE_URL: https://eryueniao7350.github.io/image
         run: |
           npx tsc -b
           npx vite build
+          node scripts/fix-public-base.mjs
           node scripts/generate-skill-pages.mjs
           node scripts/generate-scenario-pages.mjs
           node scripts/generate-comparison-pages.mjs

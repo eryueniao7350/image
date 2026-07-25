@@ -26,7 +26,10 @@ function App() {
       <AuthProvider>
         <ThemeProvider>
         <I18nProvider>
-          <BrowserRouter>
+          {/* BASE_URL comes from vite.config's `base`, which is derived from
+              SITE_URL. On a root deployment it is "/" and this collapses to "",
+              i.e. the same behaviour as before. */}
+          <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, "")}>
             <Routes>
               <Route path={IMAGE_ROUTE_PATHS.home} element={<ImageHomePage />} />
               <Route path={IMAGE_ROUTE_PATHS.hub} element={<Home />} />
