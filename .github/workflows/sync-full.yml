@@ -1,0 +1,98 @@
+name: Full Skills Sync
+
+# The routine "Sync Skills Data" workflow runs with SYNC_FAST=1, which trades
+# completeness for CI time: it caps search pages and enrichment budget and
+# returns right after the database upsert, skipping scoring, composability and
+# the security scan entirely. Left alone, score/quality_score go stale and
+# skill_compositions is never populated.
+#
+# This workflow runs the same entrypoint WITHOUT SYNC_FAST, so the full
+# post-processing chain executes. It is deliberately infrequent because the
+# composability recompute is the expensive part.
+
+on:
+  schedule:
+    - cron: "0 3 * * 0" # Sundays 03:00 UTC — off-cycle from the 8-hourly fast sync
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+# Share one group with the fast sync so the two never write concurrently.
+# Queue rather than cancel: a partially applied sync is worse than a late one.
+concurrency:
+  group: skills-sync
+  cancel-in-progress: false
+
+jobs:
+  sync-full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360 # composability recompute can run for hours
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Check required secrets
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          if [ -z "$SUPABASE_DB_URL" ]; then
+            echo "::error::Missing required repository secret: SUPABASE_DB_URL"
+            exit 1
+          fi
+
+      - name: Run full sync
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+          # SYNC_FAST intentionally unset — this is the whole point of this workflow.
+        run: python sync_runner.py
+
+  notify-failure:
+    needs: sync-full
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create failure issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `Full sync failed: ${new Date().toISOString().slice(0, 10)}`;
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'sync-failure',
+              per_page: 1,
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `Full sync also failed: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                labels: ['sync-failure'],
+                body: `Full sync run failed: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              });
+            }

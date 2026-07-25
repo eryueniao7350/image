@@ -4,7 +4,9 @@ on:
   push:
     branches: [main, codex/ai-image-mvp]
   workflow_run:
-    workflows: ["Sync Skills Data"]
+    # Both sync flavours should publish their results. The `build.if` guard
+    # below ensures a failed run of either one does not ship a deploy.
+    workflows: ["Sync Skills Data", "Full Skills Sync"]
     types: [completed]
   workflow_dispatch:
 

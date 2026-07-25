@@ -9,6 +9,13 @@ permissions:
   contents: read
   issues: write
 
+# Shared with "Full Skills Sync" so the two never write to the database at the
+# same time. Queue rather than cancel: a partially applied sync is worse than
+# a late one.
+concurrency:
+  group: skills-sync
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
