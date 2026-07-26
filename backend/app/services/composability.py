@@ -1,6 +1,7 @@
 """Compute skill composability using TF-IDF similarity + ecosystem analysis."""
 import json
 import logging
+import os
 import time
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -18,7 +19,15 @@ class ComposabilityEngine:
 
     MAX_RECOMMENDATIONS = 5
     MIN_THRESHOLD = 0.45
-    TIME_BUDGET_SECONDS = 45 * 60  # 45 minutes max for composability
+    # Wall-clock cap for the scoring loop. The inner loop is pure Python over
+    # every skill in the TF-IDF matrix, so throughput is roughly 450 candidate
+    # comparisons/second — a full sync over ~8k skills does not finish inside
+    # the old 45 minute default and silently truncated, leaving the skipped
+    # skills unlinked with no retry. The workflow that can afford a longer run
+    # raises this via the environment; everything else keeps the old default.
+    TIME_BUDGET_SECONDS = int(
+        os.environ.get("COMPOSABILITY_TIME_BUDGET_SECONDS", 45 * 60)
+    )
 
     def compute_all(self, db: Session, changed_ids: set[int] | None = None) -> int:
         """Compute composability links.

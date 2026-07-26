@@ -61,6 +61,13 @@ jobs:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
           # SYNC_FAST intentionally unset — this is the whole point of this workflow.
+          #
+          # The default 45min composability budget truncated the first real run
+          # at 154 of 465 skills, and truncated skills are not retried on the
+          # next run, so the backlog would never clear. That run spent ~158min
+          # outside composability, so 120min here keeps the job comfortably
+          # under its 360min timeout.
+          COMPOSABILITY_TIME_BUDGET_SECONDS: "7200"
         run: python sync_runner.py
 
   notify-failure:
